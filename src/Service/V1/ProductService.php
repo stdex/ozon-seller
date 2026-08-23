@@ -528,6 +528,7 @@ class ProductService extends AbstractService
     }
 
     /**
+     * @deprecated will be removed 31.08.2026 - use /v2/product/certification/options, /v2/product/certification/params and /v2/product/certificate/create
      * @see https://docs.ozon.ru/api/seller#/certificate/create-post
      */
     public function certificateCreate(array $data): int

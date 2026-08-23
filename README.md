@@ -64,6 +64,14 @@ $svc = new CategoriesService($config, $client, $requestFactory, $streamFactory);
 //do stuff
 ```
 
+## local dev
+
+```shell
+docker compose build
+docker compose up php71
+docker compose up php80
+```
+
 ## Реализованные методы
 
 Чтобы узнать какой класс и метод реализуют запрос на нужный URL воспользуйтесь скриптом `bin/is_realized.php`

@@ -336,6 +336,8 @@ class FbsService extends AbstractService implements HasOrdersInterface, HasUnful
      * @param 'act_of_acceptance'|'act_of_mismatch'|'act_of_excess' $docType
      *
      * @return array{header: array, rows: array}
+     *@deprecated will be removed 22.03.2026 - use self::actGetPdf
+     *
      */
     public function digitalActGetPdf(int $id, string $docType): array
     {

@@ -1,0 +1,13 @@
+services:
+  php71:
+    build: ./docker/php71
+    entrypoint: composer test && composer psalm
+    volumes:
+      - .:/srv
+    working_dir: /srv
+
+  php80:
+    extends:
+      service: php71
+    build: ./docker/php80
+
