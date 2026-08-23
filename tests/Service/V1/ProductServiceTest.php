@@ -587,4 +587,485 @@ JSON;
         yield [2];
         yield [100];
     }
+
+    public function testPlacementZoneInfo(): void
+    {
+        $this->quickTest(
+            'placementZoneInfo',
+            [[160249683]],
+            ['POST', '/v1/product/placement-zone/info', '{"skus":["160249683"]}'],
+            '{"products_placement":[]}',
+            static function (array $result): void {
+                self::assertSame(['products_placement' => []], $result);
+            }
+        );
+    }
+
+    public function testAttributesUpdate(): void
+    {
+        $this->quickTest(
+            'attributesUpdate',
+            [
+                [
+                    [
+                        'offer_id'   => '9789785079999',
+                        'attributes' => [['id' => 85, 'values' => [['dictionary_value_id' => 1]]]],
+                        // must be filtered out
+                        'foo'        => 'bar',
+                    ],
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/attributes/update',
+                '{"items":[{"offer_id":"9789785079999","attributes":[{"id":85,"values":[{"dictionary_value_id":1}]}]}]}',
+            ],
+            '{"task_id":1234}',
+            static function (array $result): void {
+                self::assertSame(['task_id' => 1234], $result);
+            }
+        );
+    }
+
+    public function testUpdateOfferId(): void
+    {
+        $this->quickTest(
+            'updateOfferId',
+            [
+                [
+                    [
+                        'offer_id'     => 'old-1',
+                        'new_offer_id' => 'new-1',
+                        // must be filtered out
+                        'foo'          => 'bar',
+                    ],
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/update/offer-id',
+                '{"update_offer_id":[{"offer_id":"old-1","new_offer_id":"new-1"}]}',
+            ],
+            '{"errors":[]}',
+            static function (array $result): void {
+                self::assertSame(['errors' => []], $result);
+            }
+        );
+    }
+
+    public function testInfoSubscription(): void
+    {
+        $this->quickTest(
+            'infoSubscription',
+            [[160249683]],
+            ['POST', '/v1/product/info/subscription', '{"skus":["160249683"]}'],
+            '{"result":[{"sku":160249683,"count":5}]}'
+        );
+    }
+
+    public function testRelatedSkuGet(): void
+    {
+        $this->quickTest(
+            'relatedSkuGet',
+            [[160249683]],
+            ['POST', '/v1/product/related-sku/get', '{"sku":["160249683"]}'],
+            '{"items":[],"errors":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => [], 'errors' => []], $result);
+            }
+        );
+    }
+
+    public function testInfoWrongVolume(): void
+    {
+        $this->quickTest(
+            'infoWrongVolume',
+            [50, 'prev-cursor'],
+            [
+                'POST',
+                '/v1/product/info/wrong-volume',
+                '{"limit":50,"cursor":"prev-cursor"}',
+            ],
+            '{"products":[],"cursor":""}',
+            static function (array $result): void {
+                self::assertSame(['products' => [], 'cursor' => ''], $result);
+            }
+        );
+    }
+
+    public function testInfoWarehouseStocks(): void
+    {
+        $this->quickTest(
+            'infoWarehouseStocks',
+            [123],
+            [
+                'POST',
+                '/v1/product/info/warehouse/stocks',
+                '{"warehouse_id":123,"limit":100}',
+            ],
+            '{"stocks":[],"has_next":false}',
+            static function (array $result): void {
+                self::assertSame(['stocks' => [], 'has_next' => false], $result);
+            }
+        );
+    }
+
+    public function testActionTimerUpdate(): void
+    {
+        $this->quickTest(
+            'actionTimerUpdate',
+            [[123456]],
+            ['POST', '/v1/product/action/timer/update', '{"product_ids":["123456"]}'],
+            '{}',
+            static function (array $result): void {
+                self::assertSame([], $result);
+            }
+        );
+    }
+
+    public function testActionTimerStatus(): void
+    {
+        $this->quickTest(
+            'actionTimerStatus',
+            [[123456]],
+            ['POST', '/v1/product/action/timer/status', '{"product_ids":["123456"]}'],
+            '{"statuses":[]}',
+            static function (array $result): void {
+                self::assertSame(['statuses' => []], $result);
+            }
+        );
+    }
+
+    public function testInfoDiscounted(): void
+    {
+        $this->quickTest(
+            'infoDiscounted',
+            [[160249683]],
+            ['POST', '/v1/product/info/discounted', '{"discounted_skus":["160249683"]}'],
+            '{"items":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => []], $result);
+            }
+        );
+    }
+
+    public function testInfoStocksByWarehouseFbo(): void
+    {
+        $this->quickTest(
+            'infoStocksByWarehouseFbo',
+            [
+                [
+                    'skus'      => [160249683],
+                    'offer_ids' => ['9789785079999'],
+                    'limit'     => '50',
+                    'cursor'    => 'prev-cursor',
+                    // must be filtered out
+                    'foo'       => 'bar',
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/info/stocks-by-warehouse/fbo',
+                '{"limit":50,"skus":["160249683"],"offer_ids":["9789785079999"],"cursor":"prev-cursor"}',
+            ],
+            '{"products":[],"has_next":false}',
+            static function (array $result): void {
+                self::assertSame(['products' => [], 'has_next' => false], $result);
+            }
+        );
+    }
+
+    public function testDigitalStocksImport(): void
+    {
+        $this->quickTest(
+            'digitalStocksImport',
+            [
+                [
+                    [
+                        'offer_id' => '9789785079999',
+                        'stock'    => '10',
+                        // must be filtered out
+                        'foo'      => 'bar',
+                    ],
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/digital/stocks/import',
+                '{"stocks":[{"offer_id":"9789785079999","stock":10}]}',
+            ],
+            '{"status":[]}',
+            static function (array $result): void {
+                self::assertSame(['status' => []], $result);
+            }
+        );
+    }
+
+    public function testStairwayDiscountByQuantitySet(): void
+    {
+        $this->quickTest(
+            'stairwayDiscountByQuantitySet',
+            [
+                [
+                    [
+                        'sku'      => '160249683',
+                        'enabled'  => true,
+                        'stairway' => ['steps' => []],
+                        // must be filtered out
+                        'foo'      => 'bar',
+                    ],
+                ],
+                true,
+            ],
+            [
+                'POST',
+                '/v1/product/stairway-discount/by-quantity/set',
+                '{"stairways":[{"sku":160249683,"enabled":true,"stairway":{"steps":[]}}],"suppress_warnings":true}',
+            ],
+            '{"accepted":true}',
+            static function (array $result): void {
+                self::assertSame(['accepted' => true], $result);
+            }
+        );
+    }
+
+    public function testStairwayDiscountByQuantityGet(): void
+    {
+        $this->quickTest(
+            'stairwayDiscountByQuantityGet',
+            [[160249683]],
+            [
+                'POST',
+                '/v1/product/stairway-discount/by-quantity/get',
+                '{"skus":["160249683"]}',
+            ],
+            '{"stairways":[]}',
+            static function (array $result): void {
+                self::assertSame(['stairways' => []], $result);
+            }
+        );
+    }
+
+    public function testVisibilitySet(): void
+    {
+        $this->quickTest(
+            'visibilitySet',
+            [
+                [
+                    [
+                        'sku'       => '160249683',
+                        'placement' => 'PLACEMENT_OZON',
+                        // must be filtered out
+                        'foo'       => 'bar',
+                    ],
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/visibility/set',
+                '{"item_placement":[{"sku":160249683,"placement":"PLACEMENT_OZON"}]}',
+            ],
+            '{"items":[],"items_errors":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => [], 'items_errors' => []], $result);
+            }
+        );
+    }
+
+    public function testVisibilityInfo(): void
+    {
+        $this->quickTest(
+            'visibilityInfo',
+            [[160249683]],
+            ['POST', '/v1/product/visibility/info', '{"skus":["160249683"]}'],
+            '{"items":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => []], $result);
+            }
+        );
+    }
+
+    public function testVisibilityInfoAll(): void
+    {
+        $this->quickTest(
+            'visibilityInfo',
+            [],
+            ['POST', '/v1/product/visibility/info', '{}'],
+            '{"items":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => []], $result);
+            }
+        );
+    }
+
+    public function testQuantList(): void
+    {
+        $this->quickTest(
+            'quantList',
+            [50, 'prev-cursor', 'ALL'],
+            [
+                'POST',
+                '/v1/product/quant/list',
+                '{"limit":50,"cursor":"prev-cursor","visibility":"ALL"}',
+            ],
+            '{"products":[],"total_items":0}',
+            static function (array $result): void {
+                self::assertSame(['products' => [], 'total_items' => 0], $result);
+            }
+        );
+    }
+
+    public function testQuantInfo(): void
+    {
+        $this->quickTest(
+            'quantInfo',
+            [['quant-1']],
+            ['POST', '/v1/product/quant/info', '{"quant_code":["quant-1"]}'],
+            '{"items":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => []], $result);
+            }
+        );
+    }
+
+    public function testPricesDetails(): void
+    {
+        $this->quickTest(
+            'pricesDetails',
+            [[160249683]],
+            ['POST', '/v1/product/prices/details', '{"skus":["160249683"]}'],
+            '{"prices":[]}',
+            static function (array $result): void {
+                self::assertSame(['prices' => []], $result);
+            }
+        );
+    }
+
+    public function testCertificateList(): void
+    {
+        $this->quickTest(
+            'certificateList',
+            [
+                [
+                    'offer_id'  => '9789785079999',
+                    'status'    => 'ACTIVE',
+                    'type'      => 'certificate',
+                    'page'      => '2',
+                    'page_size' => '50',
+                    // must be filtered out
+                    'foo'       => 'bar',
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/certificate/list',
+                '{"page":2,"page_size":50,"offer_id":"9789785079999","status":"ACTIVE","type":"certificate"}',
+            ],
+            '{"result":{"certificates":[],"page_count":1}}'
+        );
+    }
+
+    public function testCertificateInfo(): void
+    {
+        $this->quickTest(
+            'certificateInfo',
+            ['certificate-1'],
+            [
+                'POST',
+                '/v1/product/certificate/info',
+                '{"certificate_number":"certificate-1"}',
+            ],
+            '{"result":{"certificate_id":1,"certificate_number":"certificate-1"}}'
+        );
+    }
+
+    public function testCertificateDelete(): void
+    {
+        $this->quickTest(
+            'certificateDelete',
+            [1],
+            ['POST', '/v1/product/certificate/delete', '{"certificate_id":1}'],
+            '{"result":{"is_delete":true}}'
+        );
+    }
+
+    public function testCertificateUnbind(): void
+    {
+        $this->quickTest(
+            'certificateUnbind',
+            [
+                1,
+                [
+                    'product_id' => [123456],
+                    'skus'       => [160249683],
+                    // must be filtered out
+                    'foo'        => 'bar',
+                ],
+            ],
+            [
+                'POST',
+                '/v1/product/certificate/unbind',
+                '{"product_id":["123456"],"skus":["160249683"],"certificate_id":1}',
+            ],
+            '{"result":[]}'
+        );
+    }
+
+    public function testCertificateProductsList(): void
+    {
+        $this->quickTest(
+            'certificateProductsList',
+            [1, ['limit' => '50', 'last_id' => '10']],
+            [
+                'POST',
+                '/v1/product/certificate/products/list',
+                '{"last_id":10,"limit":50,"certificate_id":1}',
+            ],
+            '{"result":{"items":[],"count":0}}'
+        );
+    }
+
+    public function testCertificateProductStatusList(): void
+    {
+        $this->quickTest(
+            'certificateProductStatusList',
+            [],
+            ['POST', '/v1/product/certificate/product_status/list', '{}'],
+            '{"result":[{"code":"ACCEPTED","name":"Принят"}]}'
+        );
+    }
+
+    public function testCertificateStatusList(): void
+    {
+        $this->quickTest(
+            'certificateStatusList',
+            [],
+            ['POST', '/v1/product/certificate/status/list', '{}'],
+            '{"result":[{"code":"ACTIVE","name":"Активный"}]}'
+        );
+    }
+
+    public function testCertificateRejectionReasonsList(): void
+    {
+        $this->quickTest(
+            'certificateRejectionReasonsList',
+            [],
+            ['POST', '/v1/product/certificate/rejection_reasons/list', '{}'],
+            '{"result":[{"code":"WRONG_TYPE","name":"Неверный тип"}]}'
+        );
+    }
+
+    public function testCertificationList(): void
+    {
+        $this->quickTest(
+            'certificationList',
+            [2, 50],
+            [
+                'POST',
+                '/v1/product/certification/list',
+                '{"page":2,"page_size":50}',
+            ],
+            '{"result":{"certification":[],"total":0}}'
+        );
+    }
 }

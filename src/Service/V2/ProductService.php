@@ -440,4 +440,47 @@ class ProductService extends AbstractService
     {
         return $this->request('POST', "{$this->path}/certification/options");
     }
+
+    /**
+     * Product pictures info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductInfoPicturesV2
+     *
+     * @param list<int|string> $productIds
+     *
+     * @return array{items?: list<array>}
+     */
+    public function picturesInfo(array $productIds): array
+    {
+        return $this->request('POST', "{$this->path}/pictures/info", [
+            'product_id' => array_map('strval', $productIds),
+        ]);
+    }
+
+    /**
+     * Categories that require a certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificationListV2
+     *
+     * @return array{certification?: list<array>, total?: int}
+     */
+    public function certificationList(int $page = 1, int $pageSize = 100): array
+    {
+        return $this->request('POST', "{$this->path}/certification/list", [
+            'page'      => $page,
+            'page_size' => $pageSize,
+        ]);
+    }
+
+    /**
+     * Accordance types of certificates.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateAccordanceTypesV2
+     *
+     * @return array{base?: list<array>, hazard?: list<array>}
+     */
+    public function certificateAccordanceTypesList(): array
+    {
+        return $this->request('POST', "{$this->path}/certificate/accordance-types/list", '{}');
+    }
 }

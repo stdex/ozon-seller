@@ -454,4 +454,49 @@ class ProductServiceTest extends AbstractTestCase
             }
         );
     }
+
+    /**
+     * @covers ::picturesInfo
+     */
+    public function testPicturesInfo(): void
+    {
+        $this->quickTest(
+            'picturesInfo',
+            [[123456]],
+            ['POST', '/v2/product/pictures/info', '{"product_id":["123456"]}'],
+            '{"items":[]}',
+            static function (array $result): void {
+                self::assertSame(['items' => []], $result);
+            }
+        );
+    }
+
+    /**
+     * @covers ::certificationList
+     */
+    public function testCertificationList(): void
+    {
+        $this->quickTest(
+            'certificationList',
+            [2, 50],
+            ['POST', '/v2/product/certification/list', '{"page":2,"page_size":50}'],
+            '{"certification":[],"total":0}',
+            static function (array $result): void {
+                self::assertSame(['certification' => [], 'total' => 0], $result);
+            }
+        );
+    }
+
+    /**
+     * @covers ::certificateAccordanceTypesList
+     */
+    public function testCertificateAccordanceTypesList(): void
+    {
+        $this->quickTest(
+            'certificateAccordanceTypesList',
+            [],
+            ['POST', '/v2/product/certificate/accordance-types/list', '{}'],
+            '{"result":{"base":[],"hazard":[]}}'
+        );
+    }
 }
