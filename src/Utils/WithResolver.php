@@ -19,6 +19,8 @@ final class WithResolver
                 return ['barcodes'];
             case [2, PostingScheme::FBO]:
                 return ['analytics_data', 'financial_data'];
+            case [3, PostingScheme::FBO]:
+                return ['analytics_data', 'financial_data', 'legal_info'];
             case [3, PostingScheme::FBS, 'ship']:
             case [4, PostingScheme::FBS, 'ship']:
                 return ['additional_data'];
