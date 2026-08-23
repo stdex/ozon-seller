@@ -76,6 +76,13 @@ follows:
   method); that matrix lives in `WithResolver::getKeys()`.
 - `src/Enum/*` hold the API's string constants (`Visibility`, `Status`, `PostingScheme`, …).
 
+Payload/response shapes are documented as `@psalm-type T*` blocks in the **class** docblock and referenced from method
+`@param`/`@return` (see `V4\Posting\FbsService`, `V3\Posting\FbsService`). Derive them from `var/swagger.json`, but
+describe the request as the method actually sends it — i.e. after `ArrayHelper::pick`, not the full spec schema — and
+note where nested structures were left as bare `array`. A method implementing one of the marker interfaces must keep
+`|array<array-key, mixed>` in its `@param`, otherwise psalm reports
+`MoreSpecificImplementedParamType`.
+
 Cross-version marker interfaces (`GetOrderInterface`, `HasOrdersInterface`,
 `HasUnfulfilledOrdersInterface`) let consumers treat Fbs/Fbo/Crossborder services uniformly.
 

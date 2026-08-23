@@ -6,6 +6,34 @@ namespace Gam6itko\OzonSeller\Service\V1;
 
 use Gam6itko\OzonSeller\Service\AbstractService;
 
+/**
+ * @psalm-type TAnalyticsFilter = array{
+ *     key?: string,
+ *     op?: 'EQ'|'GT'|'GTE'|'LT'|'LTE',
+ *     value?: string
+ * }
+ * @psalm-type TAnalyticsSort = array{
+ *     key?: string,
+ *     order?: 'ASC'|'DESC'
+ * }
+ * @psalm-type TAnalyticsDataRow = array{
+ *     dimensions?: list<array{id?: string, name?: string}>,
+ *     metrics?: list<float>
+ * }
+ * @psalm-type TAnalyticsData = array{
+ *     data?: list<TAnalyticsDataRow>,
+ *     totals?: list<float>
+ * }
+ * @psalm-type TStockOnWarehouseRow = array{
+ *     sku?: int,
+ *     item_code?: string,
+ *     item_name?: string,
+ *     free_to_sell_amount?: int,
+ *     promised_amount?: int,
+ *     reserved_amount?: int,
+ *     warehouse_name?: string
+ * }
+ */
 class AnalyticsService extends AbstractService
 {
     private $path = '/v1/analytics';
@@ -14,6 +42,13 @@ class AnalyticsService extends AbstractService
      * Specify the period and metrics that are required.
      *
      * @see https://docs.ozon.ru/api/seller/en/#operation/AnalyticsAPI_AnalyticsGetData
+     *
+     * @param list<string>           $dimension
+     * @param list<string>           $metrics
+     * @param list<TAnalyticsFilter> $filters
+     * @param list<TAnalyticsSort>   $sort
+     *
+     * @return TAnalyticsData
      */
     public function data(
         \DateTimeInterface $dateFrom,
@@ -43,6 +78,8 @@ class AnalyticsService extends AbstractService
      * Report on stocks and products movement at Ozon warehouses..
      *
      * @see https://docs.ozon.ru/api/seller/en/#operation/AnalyticsAPI_AnalyticsGetStockOnWarehouses
+     *
+     * @return array{rows?: list<TStockOnWarehouseRow>}
      */
     public function stockOnWarehouses(int $offset = 0, int $limit = 10): array
     {

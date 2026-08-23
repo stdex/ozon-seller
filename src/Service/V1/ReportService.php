@@ -14,6 +14,23 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  * @see https://cb-api.ozonru.me/apiref/en/#t-title_seller_reports
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
+ *
+ * @psalm-type TReportType = 'SELLER_PRODUCTS'|'SELLER_STOCK'|'SELLER_RETURNS'|'SELLER_POSTINGS'|'SELLER_DISCOUNTED'|'MUTUAL_SETTLEMENT'|'COMPENSATION_REPORT'|'DECOMPENSATION_REPORT'|'MARKED_PRODUCTS_SALES'|'SELLER_PLACEMENT_BY_PRODUCTS'|'SELLER_PLACEMENT_BY_SUPPLIES'
+ * @psalm-type TReport = array{
+ *     code?: string,
+ *     created_at?: string,
+ *     expires_at?: string,
+ *     error?: string,
+ *     file?: string,
+ *     params?: array<string, string>,
+ *     report_type?: TReportType,
+ *     status?: string,
+ *     additional_data?: list<array{key?: string, value?: string}>
+ * }
+ * @psalm-type TReportList = array{
+ *     reports?: list<TReport>,
+ *     total?: int
+ * }
  */
 class ReportService extends AbstractService
 {
@@ -22,7 +39,9 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportlist
      *
-     * @return array|string
+     * @param array{page?: int, page_size?: int, report_type?: TReportType} $query
+     *
+     * @return TReportList|string
      */
     public function list(array $query)
     {
@@ -36,7 +55,7 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportinfo
      *
-     * @return array|string
+     * @return TReport|string
      */
     public function info(?string $code = null)
     {
@@ -50,9 +69,9 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportproducts
      *
-     * @param array $query ['offer_id', 'search', 'sku', 'visibility']
+     * @param array{offer_id?: list<string>, search?: string, sku?: list<int>, visibility?: string} $query
      *
-     * @return array
+     * @return array{code?: string}
      */
     public function products(array $query = [])
     {
