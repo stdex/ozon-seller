@@ -17,6 +17,33 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  *      sku?: int,
  *      offer_id?: string
  * }
+ * @psalm-type TCertificateType = 'UNKNOWN'|'CERTIFICATE_OF_CONFORMITY'|'DECLARATION'|'CERTIFICATE_OF_REGISTRATION'|'REGISTRATION_CERTIFICATE'|'REFUSED_LETTER'|'VETERINARY_COVER_DOCUMENT'|'SAFETY_DATA_SHEET'
+ * @psalm-type TCertificateFile = array{
+ *      name: string,
+ *      file_content: string
+ * }
+ * @psalm-type TCertificateExpiredDate = array{
+ *      date?: array{day?: int, month?: int, year?: int},
+ *      infinite?: bool
+ * }
+ * @psalm-type TCertificateCreateParams = array{
+ *      name?: string,
+ *      number?: string,
+ *      certificate_type?: TCertificateType,
+ *      certificate_country?: string,
+ *      accordance_type?: string,
+ *      product_type?: string,
+ *      issue_date?: string,
+ *      expired_date?: TCertificateExpiredDate,
+ *      link_to_registry?: string,
+ *      files?: list<TCertificateFile>,
+ *      skus?: list<string>
+ * }
+ * @psalm-type TCertificateCreateResponse = array{
+ *      certificate_id?: int,
+ *      status?: 'INCOMPLETE'|'COMPLETED',
+ *      params?: list<array{name?: string, state?: 'VALID'|'INVALID'|'MISSING', error?: string}>
+ * }
  */
 class ProductService extends AbstractService
 {
@@ -304,5 +331,52 @@ class ProductService extends AbstractService
         }
 
         return $this->request('POST', "{$this->path}/info/stocks-by-warehouse/fbs", $query);
+    }
+
+    /**
+     * Создать сертификат качества. Заменяет V1\ProductService::certificateCreate,
+     * который Ozon отключает 31.08.2026.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateCreate
+     *
+     * @param TCertificateCreateParams|array<array-key, mixed> $params
+     *
+     * @return TCertificateCreateResponse
+     */
+    public function certificateCreate(array $params): array
+    {
+        $params = ArrayHelper::pick($params, [
+            'accordance_type',
+            'certificate_country',
+            'certificate_type',
+            'expired_date',
+            'files',
+            'issue_date',
+            'link_to_registry',
+            'name',
+            'number',
+            'product_type',
+            'skus',
+        ]);
+
+        $params = TypeCaster::castArr($params, [
+            'accordance_type'     => 'str',
+            'certificate_country' => 'str',
+            'certificate_type'    => 'str',
+            'issue_date'          => 'str',
+            'link_to_registry'    => 'str',
+            'name'                => 'str',
+            'number'              => 'str',
+            'product_type'        => 'str',
+            'skus'                => 'arrOfStr',
+        ]);
+
+        foreach ($params['files'] ?? [] as $file) {
+            if (empty($file['name']) || empty($file['file_content'])) {
+                throw new \InvalidArgumentException('Each file requires `name` and base64 encoded `file_content`');
+            }
+        }
+
+        return $this->request('POST', "{$this->path}/certificate/create", ['params' => $params]);
     }
 }

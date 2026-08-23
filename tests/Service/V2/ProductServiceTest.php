@@ -352,4 +352,56 @@ class ProductServiceTest extends AbstractTestCase
         $svc = new ProductService($config, $client, $this->createRequestFactory(), $this->createStreamFactory());
         $svc->infoStocksByWarehouseFbs(['limit' => 10]);
     }
+
+    /**
+     * @covers ::certificateCreate
+     */
+    public function testCertificateCreate(): void
+    {
+        $this->quickTest(
+            'certificateCreate',
+            [
+                [
+                    'name'                => 'Сертификат соответствия',
+                    'number'              => 'RU C-CN.AB99.B.00000/26',
+                    'certificate_type'    => 'CERTIFICATE_OF_CONFORMITY',
+                    'certificate_country' => 'RU',
+                    'accordance_type'     => 'certificate_of_conformity',
+                    'product_type'        => 'product',
+                    'issue_date'          => '2026-08-01T00:00:00Z',
+                    'expired_date'        => ['date' => ['day' => 1, 'month' => 8, 'year' => 2031]],
+                    'link_to_registry'    => 'https://pub.fsa.gov.ru/rss/certificate',
+                    'files'               => [['name' => 'cert.pdf', 'file_content' => 'JVBERi0=']],
+                    'skus'                => [123456789],
+                    // must be filtered out
+                    'foo'                 => 'bar',
+                ],
+            ],
+            [
+                'POST',
+                '/v2/product/certificate/create',
+                '{"params":{"name":"\u0421\u0435\u0440\u0442\u0438\u0444\u0438\u043a\u0430\u0442 \u0441\u043e\u043e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0438\u044f","number":"RU C-CN.AB99.B.00000\/26","certificate_type":"CERTIFICATE_OF_CONFORMITY","certificate_country":"RU","accordance_type":"certificate_of_conformity","product_type":"product","issue_date":"2026-08-01T00:00:00Z","expired_date":{"date":{"day":1,"month":8,"year":2031}},"link_to_registry":"https:\/\/pub.fsa.gov.ru\/rss\/certificate","files":[{"name":"cert.pdf","file_content":"JVBERi0="}],"skus":["123456789"]}}',
+            ],
+            '{"certificate_id":15074,"status":"COMPLETED"}',
+            static function (array $result): void {
+                self::assertSame(15074, $result['certificate_id']);
+                self::assertSame('COMPLETED', $result['status']);
+            }
+        );
+    }
+
+    /**
+     * @covers ::certificateCreate
+     */
+    public function testCertificateCreateInvalidFile(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+
+        $svc = $this->createSvc(
+            $this->createMock(\Psr\Http\Client\ClientInterface::class),
+            $this->createRequestFactory(),
+            $this->createStreamFactory()
+        );
+        $svc->certificateCreate(['name' => 'cert', 'files' => [['name' => 'cert.pdf']]]);
+    }
 }
