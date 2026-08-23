@@ -105,3 +105,5 @@ payload shaping, so a new endpoint needs a `quickTest` case pinning the exact JS
    (use `null` for known-but-unimplemented URLs).
 4. Add a `quickTest` case under `tests/Service/V{n}/`.
 5. Document it in `README.md` (the README is in Russian; keep new sections in Russian) and run `composer csfix`.
+
+Docblocks and inline comments in `src/` and `tests/` are written in **English** — only `README.md` is in Russian.
