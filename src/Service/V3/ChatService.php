@@ -9,9 +9,9 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Чаты с покупателями.
+ * Chats with customers.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -67,7 +67,7 @@ class ChatService extends AbstractService
     private $path = '/v3/chat';
 
     /**
-     * Список чатов.
+     * Chats list.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ChatAPI_ChatListV3
      *
@@ -98,7 +98,7 @@ class ChatService extends AbstractService
     }
 
     /**
-     * История чата.
+     * Chat history.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ChatAPI_ChatHistoryV3
      *

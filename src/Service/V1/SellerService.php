@@ -7,9 +7,9 @@ namespace Gam6itko\OzonSeller\Service\V1;
 use Gam6itko\OzonSeller\Service\AbstractService;
 
 /**
- * Информация о продавце.
+ * Seller info.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -49,7 +49,7 @@ use Gam6itko\OzonSeller\Service\AbstractService;
 class SellerService extends AbstractService
 {
     /**
-     * Информация о продавце: компания, рейтинги, подписка.
+     * Seller info: company, ratings, subscription.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/SellerAPI_SellerInfo
      *
@@ -61,7 +61,7 @@ class SellerService extends AbstractService
     }
 
     /**
-     * Информация о подключении к логистике Ozon.
+     * Ozon logistics connection info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/SellerAPI_OzonLogisticsInfo
      *
@@ -73,7 +73,7 @@ class SellerService extends AbstractService
     }
 
     /**
-     * Список доступных для API-ключа ролей и методов.
+     * Roles and methods available for the API key.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/SellerAPI_Roles
      *

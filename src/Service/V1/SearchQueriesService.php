@@ -7,11 +7,11 @@ namespace Gam6itko\OzonSeller\Service\V1;
 use Gam6itko\OzonSeller\Service\AbstractService;
 
 /**
- * Поисковые запросы покупателей. Доступно продавцам с подпиской Premium Plus.
+ * Customer search queries. Available to sellers with a Premium Plus subscription.
  *
- * В спецификации limit, offset и total — строки (int64).
+ * In the specification limit, offset and total are strings (int64).
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -35,7 +35,7 @@ class SearchQueriesService extends AbstractService
     private $path = '/v1/search-queries';
 
     /**
-     * Поисковые запросы, похожие на заданный текст.
+     * Search queries similar to the given text.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/SearchQueriesAPI_SearchQueriesText
      *
@@ -56,7 +56,7 @@ class SearchQueriesService extends AbstractService
     }
 
     /**
-     * Топ поисковых запросов.
+     * Top search queries.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/SearchQueriesAPI_SearchQueriesTop
      *

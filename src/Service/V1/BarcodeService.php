@@ -9,9 +9,9 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Штрихкоды товаров.
+ * Product barcodes.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -28,7 +28,7 @@ class BarcodeService extends AbstractService
     private $path = '/v1/barcode';
 
     /**
-     * Привязать штрихкоды к товарам.
+     * Binds barcodes to products.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/BarcodeAPI_BarcodeAdd
      *
@@ -49,7 +49,7 @@ class BarcodeService extends AbstractService
     }
 
     /**
-     * Создать штрихкоды для товаров.
+     * Generates barcodes for products.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/BarcodeAPI_BarcodeGenerate
      *

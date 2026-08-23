@@ -14,8 +14,8 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
 use Gam6itko\OzonSeller\Utils\WithResolver;
 
 /**
- * Типы описаны по var/swagger.json. У вложенных структур отправления перечислены
- * только ключи верхнего уровня, глубже — просто `array`.
+ * Types are derived from var/swagger.json. For nested posting structures only the
+ * top-level keys are listed, deeper levels are left as bare `array`.
  *
  * @psalm-type TWith = array{
  *     analytics_data?: bool,

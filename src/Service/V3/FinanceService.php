@@ -9,7 +9,7 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @psalm-type TDateRange = array{from?: string, to?: string}
  * @psalm-type TTransactionFilter = array{
@@ -64,7 +64,7 @@ class FinanceService extends AbstractService
     private $path = '/v3/finance';
 
     /**
-     * Список транзакций.
+     * Transactions list.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_FinanceTransactionListV3
      *
@@ -97,7 +97,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Суммы транзакций.
+     * Transaction totals.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_FinanceTransactionTotalV3
      *

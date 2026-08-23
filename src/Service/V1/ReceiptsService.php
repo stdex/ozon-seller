@@ -9,9 +9,9 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Чеки.
+ * Receipts.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -36,13 +36,13 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  *     has_next?: bool
  * }
  *
- * Метод /v1/receipts/upload не реализован: он принимает multipart/form-data,
- * а транспорт библиотеки отправляет только JSON.
+ * The /v1/receipts/upload method is not implemented: it accepts multipart/form-data,
+ * while the library transport sends JSON only.
  */
 class ReceiptsService extends AbstractService
 {
     /**
-     * Список чеков продавца.
+     * Seller receipts list.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReceiptAPI_SellerList
      *
@@ -67,7 +67,7 @@ class ReceiptsService extends AbstractService
     }
 
     /**
-     * Получить чек в формате PDF, закодированный в base64.
+     * Retrieves a receipt as a base64-encoded PDF.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/GetReceipt
      *

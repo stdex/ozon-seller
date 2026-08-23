@@ -9,7 +9,7 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @psalm-type TMoney = array{currency_code?: string, value?: float}
  * @psalm-type TBalanceResponse = array{
@@ -139,7 +139,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Отчёт о реализации товаров за день.
+     * Products realization report for a single day.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_CreateReportF3
      *
@@ -155,7 +155,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Позаказный отчёт о реализации товаров.
+     * Per-order products realization report.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_CreateReportF4
      *
@@ -170,7 +170,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Получить отчёт о балансе.
+     * Retrieves the balance report.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_GetBalance
      *
@@ -185,7 +185,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Финансовый отчёт.
+     * Financial report.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_FinanceCashFlowStatementList
      *
@@ -219,7 +219,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Получить справочник начислений.
+     * Retrieves the accrual types dictionary.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_AccrualTypes
      *
@@ -231,12 +231,12 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Получить начисления за день.
+     * Retrieves accruals for a single day.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_AccrualByDay
      *
-     * @param string $date   дата в формате YYYY-MM-DD
-     * @param string $lastId идентификатор последнего значения предыдущего ответа
+     * @param string $date   date in YYYY-MM-DD format
+     * @param string $lastId last id from the previous response
      *
      * @return array{accruals?: list<TAccrual>, last_id?: string}
      */
@@ -249,7 +249,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Получить начисления по отправлениям.
+     * Retrieves accruals by postings.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_AccrualPostings
      *
@@ -265,11 +265,11 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Реестр продаж юридическим лицам. Возвращает код отчёта для /v1/report/info.
+     * B2B sales register. Returns a report code for /v1/report/info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_DocumentB2BSales
      *
-     * @param string $date     месяц отчёта в формате YYYY-MM
+     * @param string $date     report month in YYYY-MM format
      * @param string $language DEFAULT|RU|EN
      *
      * @return TDocumentCodeResult
@@ -283,11 +283,11 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Реестр продаж юридическим лицам в JSON-формате.
+     * B2B sales register in JSON format.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_DocumentB2BSalesJSON
      *
-     * @param string $date месяц отчёта в формате YYYY-MM
+     * @param string $date report month in YYYY-MM format
      *
      * @return TB2bSalesJsonResponse
      */
@@ -297,11 +297,11 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Отчёт о взаиморасчётах. Возвращает код отчёта для /v1/report/info.
+     * Mutual settlement report. Returns a report code for /v1/report/info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_MutualSettlement
      *
-     * @param string $date     месяц отчёта в формате YYYY-MM
+     * @param string $date     report month in YYYY-MM format
      * @param string $language DEFAULT|RU|EN
      *
      * @return TDocumentCodeResult
@@ -315,11 +315,11 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Отчёт о компенсациях. Возвращает код отчёта для /v1/report/info.
+     * Compensation report. Returns a report code for /v1/report/info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_Compensation
      *
-     * @param string $date     месяц отчёта в формате YYYY-MM
+     * @param string $date     report month in YYYY-MM format
      * @param string $language DEFAULT|RU|EN
      *
      * @return TDocumentCodeResult
@@ -333,11 +333,11 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Отчёт о декомпенсациях. Возвращает код отчёта для /v1/report/info.
+     * Decompensation report. Returns a report code for /v1/report/info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_Decompensation
      *
-     * @param string $date     месяц отчёта в формате YYYY-MM
+     * @param string $date     report month in YYYY-MM format
      * @param string $language DEFAULT|RU|EN
      *
      * @return TDocumentCodeResult
@@ -351,7 +351,7 @@ class FinanceService extends AbstractService
     }
 
     /**
-     * Отчёт о выкупленных товарах.
+     * Bought-out products report.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_ProductsBuyout
      *

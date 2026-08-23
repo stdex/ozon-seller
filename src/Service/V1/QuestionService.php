@@ -9,9 +9,9 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Вопросы о товарах. Доступно продавцам с подпиской Premium Plus.
+ * Product questions. Available to sellers with a Premium Plus subscription.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -69,7 +69,7 @@ class QuestionService extends AbstractService
     private $path = '/v1/question';
 
     /**
-     * Список вопросов.
+     * Questions list.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_List
      *
@@ -106,7 +106,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Информация о вопросе.
+     * Question info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_Info
      *
@@ -118,7 +118,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Количество вопросов по статусам.
+     * Number of questions by status.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_Count
      *
@@ -130,7 +130,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Изменить статус вопросов.
+     * Changes the status of questions.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_ChangeStatus
      *
@@ -146,7 +146,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Товары с наибольшим количеством вопросов.
+     * Products with the largest number of questions.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_TopSku
      *
@@ -158,7 +158,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Создать ответ на вопрос.
+     * Creates an answer to a question.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_AnswerCreate
      *
@@ -174,7 +174,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Удалить ответ на вопрос.
+     * Deletes an answer to a question.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_AnswerDelete
      */
@@ -187,7 +187,7 @@ class QuestionService extends AbstractService
     }
 
     /**
-     * Список ответов на вопрос.
+     * Answers to a question.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Question_AnswerList
      *

@@ -7,7 +7,7 @@ namespace Gam6itko\OzonSeller\Service\V2;
 use Gam6itko\OzonSeller\Service\AbstractService;
 
 /**
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @psalm-type TRealizationResult = array{
  *     header?: array{
@@ -40,7 +40,7 @@ class FinanceService extends AbstractService
     private $path = '/v2/finance';
 
     /**
-     * Отчёт о реализации товаров (версия 2).
+     * Products realization report (version 2).
      *
      * @see https://docs.ozon.ru/api/seller/#operation/FinanceAPI_CreateReportF1createV2
      *

@@ -294,7 +294,7 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Receive stocks in seller's warehouses (FBS и rFBS).
+     * Receive stocks in seller's warehouses (FBS and rFBS).
      *
      * @see https://docs.ozon.ru/api/seller/?__rr=1&abt_att=1#operation/ProductAPI_GetProductInfoStocksByWarehouseFbsV2
      *
@@ -341,8 +341,8 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Создать сертификат качества. Заменяет V1\ProductService::certificateCreate,
-     * который Ozon отключает 31.08.2026.
+     * Creates a quality certificate. Replaces V1\ProductService::certificateCreate,
+     * which Ozon shuts down on 31.08.2026.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateCreate
      *
@@ -388,8 +388,8 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Обязательные параметры для создания сертификата качества: какие поля
-     * нужно передать в self::certificateCreate для конкретного сертификата.
+     * Required parameters for creating a quality certificate: which fields
+     * have to be passed to self::certificateCreate for a particular certificate.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateParams
      *
@@ -429,8 +429,8 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Полный список параметров, из которых собирается сертификат качества,
-     * с признаком обязательности.
+     * The full list of parameters a quality certificate is built from,
+     * with a required flag.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateOptions
      *

@@ -12,7 +12,7 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
 use Gam6itko\OzonSeller\Utils\WithResolver;
 
 /**
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @psalm-type TListFilter = array{
  *     order_numbers?: list<string>,

@@ -9,9 +9,9 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Комментарии к отзывам. Доступно продавцам с подпиской Premium Plus.
+ * Review comments. Available to sellers with a Premium Plus subscription.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -57,7 +57,7 @@ class ReviewService extends AbstractService
     private $path = '/v1/review';
 
     /**
-     * Оставить комментарий на отзыв.
+     * Leaves a comment on a review.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Review_CommentCreate
      *
@@ -85,7 +85,7 @@ class ReviewService extends AbstractService
     }
 
     /**
-     * Получить список комментариев на отзыв.
+     * Retrieves a list of comments on a review.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/Review_CommentList
      *

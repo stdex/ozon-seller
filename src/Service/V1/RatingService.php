@@ -9,9 +9,9 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Рейтинги продавца.
+ * Seller ratings.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -84,7 +84,7 @@ class RatingService extends AbstractService
     private $path = '/v1/rating';
 
     /**
-     * Информация о рейтингах продавца.
+     * Seller ratings info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/RatingAPI_RatingSummaryV1
      *
@@ -96,7 +96,7 @@ class RatingService extends AbstractService
     }
 
     /**
-     * Информация о рейтингах продавца за период.
+     * Seller ratings for a period.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/RatingAPI_RatingHistoryV1
      *
@@ -124,7 +124,7 @@ class RatingService extends AbstractService
     }
 
     /**
-     * Информация об индексе локализации FBS.
+     * FBS localization index info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/RatingAPI_IndexFbsInfo
      *
@@ -136,7 +136,7 @@ class RatingService extends AbstractService
     }
 
     /**
-     * Отправления, которые повлияли на индекс FBS.
+     * Postings that affected the FBS index.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/RatingAPI_IndexFbsPostingList
      *

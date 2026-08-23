@@ -216,7 +216,7 @@ class AnalyticsService extends AbstractService
     }
 
     /**
-     * Отчёт по оборачиваемости товаров FBO.
+     * FBO products turnover report.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/AnalyticsAPI_AnalyticsTurnoverStocks
      *
@@ -241,7 +241,7 @@ class AnalyticsService extends AbstractService
     }
 
     /**
-     * Аналитика по остаткам на складах Ozon.
+     * Stocks analytics for Ozon warehouses.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/AnalyticsAPI_AnalyticsStocksV1
      *
@@ -277,7 +277,7 @@ class AnalyticsService extends AbstractService
     }
 
     /**
-     * Управление остатками: количество товаров по типам остатков.
+     * Stock management: product counts by stock type.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/AnalyticsAPI_AnalyticsManageStocks
      *
@@ -308,7 +308,7 @@ class AnalyticsService extends AbstractService
     }
 
     /**
-     * Запросы товаров: поисковые запросы, по которым находят товары.
+     * Product queries: search queries products are found by.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/AnalyticsAPI_ProductQueries
      *
@@ -345,7 +345,7 @@ class AnalyticsService extends AbstractService
     }
 
     /**
-     * Детализация запросов товаров.
+     * Product queries details.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/AnalyticsAPI_ProductQueriesDetails
      *

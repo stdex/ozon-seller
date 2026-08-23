@@ -7,9 +7,9 @@ namespace Gam6itko\OzonSeller\Service\V2;
 use Gam6itko\OzonSeller\Service\AbstractService;
 
 /**
- * Чаты с покупателями.
+ * Chats with customers.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  */
@@ -18,11 +18,11 @@ class ChatService extends AbstractService
     private $path = '/v2/chat';
 
     /**
-     * Отметить сообщения как прочитанные.
+     * Marks messages as read.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ChatAPI_ChatReadV2
      *
-     * @param int $fromMessageId идентификатор сообщения, начиная с которого нужно отметить сообщения прочитанными
+     * @param int $fromMessageId id of the message to start marking as read from
      *
      * @return array{unread_count?: int}
      */

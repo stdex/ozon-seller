@@ -74,7 +74,7 @@ final class FboServiceTest extends AbstractTestCase
     }
 
     /**
-     * Ответ приходит без обёртки `result`, поэтому возвращается целиком.
+     * The response has no `result` wrapper, so it is returned as is.
      *
      * @covers ::list
      */

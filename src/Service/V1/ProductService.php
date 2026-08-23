@@ -116,7 +116,7 @@ class ProductService extends AbstractService
         $income = ArrayHelper::pick($income, ['items']);
         foreach ($income['items'] as &$item) {
             $item = TypeCaster::castArr(
-                // `premium_price` больше нет в swagger.json, оставлено для обратной совместимости
+                // `premium_price` is gone from swagger.json, kept for backward compatibility
                 ArrayHelper::pick($item, ['sku', 'name', 'offer_id', 'price', 'old_price', 'premium_price', 'vat', 'currency_code']),
                 [
                     'offer_id'      => 'str',
@@ -293,7 +293,7 @@ class ProductService extends AbstractService
                 'offer_id',
                 'price',
                 'old_price',
-                // `premium_price` больше нет в swagger.json, оставлено для обратной совместимости
+                // `premium_price` is gone from swagger.json, kept for backward compatibility
                 'premium_price',
                 'min_price',
                 'net_price',
@@ -561,7 +561,7 @@ class ProductService extends AbstractService
      */
     public function picturesImport(array $query): array
     {
-        // `images360` и `primary_image` больше нет в swagger.json, оставлены для обратной совместимости
+        // `images360` and `primary_image` are gone from swagger.json, kept for backward compatibility
         $query = ArrayHelper::pick($query, ['color_image', 'images', 'images360', 'primary_image', 'product_id']);
         $query = TypeCaster::castArr($query, [
             'color_image'   => 'str',
@@ -615,7 +615,7 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Receive stocks in seller's warehouses (FBS и rFBS).
+     * Receive stocks in seller's warehouses (FBS and rFBS).
      * fbs-sku param is deprecated since August 15, 2023.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductStocksByWarehouseFbs
@@ -643,7 +643,7 @@ class ProductService extends AbstractService
      */
     public function infoStocksByWarehouseFbs(array $query): array
     {
-        // `fbs_sku` больше нет в swagger.json, оставлен для обратной совместимости
+        // `fbs_sku` is gone from swagger.json, kept for backward compatibility
         $query = ArrayHelper::pick($query, ['sku', 'offer_id', 'fbs_sku']);
         $query = TypeCaster::castArr($query, ['sku' => 'arrayOfString', 'offer_id' => 'arrayOfString', 'fbs_sku' => 'arrayOfString']);
 

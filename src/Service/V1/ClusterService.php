@@ -7,9 +7,9 @@ namespace Gam6itko\OzonSeller\Service\V1;
 use Gam6itko\OzonSeller\Service\AbstractService;
 
 /**
- * Кластеры и склады.
+ * Clusters and warehouses.
  *
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -27,7 +27,7 @@ use Gam6itko\OzonSeller\Service\AbstractService;
 class ClusterService extends AbstractService
 {
     /**
-     * Информация о кластерах и их складах.
+     * Clusters and their warehouses info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ClusterAPI_ClusterList
      *

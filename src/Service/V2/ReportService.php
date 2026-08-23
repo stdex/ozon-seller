@@ -9,7 +9,7 @@ use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
- * Типы описаны по var/swagger.json.
+ * Types are derived from var/swagger.json.
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
  *
@@ -27,7 +27,7 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
 class ReportService extends AbstractService
 {
     /**
-     * Отчёт о возвратах. Возвращает код отчёта для \Gam6itko\OzonSeller\Service\V1\ReportService::info.
+     * Returns report. Returns a report code for \Gam6itko\OzonSeller\Service\V1\ReportService::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateReturnsReportV2
      *

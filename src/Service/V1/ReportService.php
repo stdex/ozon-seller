@@ -128,7 +128,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Отчёт об отправлениях. Возвращает код отчёта для self::info.
+     * Postings report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_ReportPostingCreate
      *
@@ -197,7 +197,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Отчёт об уценённых товарах. Возвращает код отчёта для self::info.
+     * Discounted products report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateDiscountedReport
      *
@@ -209,7 +209,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Отчёт об остатках на складах FBS. Возвращает код отчёта для self::info.
+     * FBS warehouse stock report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_WarehouseStock
      *
@@ -227,7 +227,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Отчёт о размещении товаров. Возвращает код отчёта для self::info.
+     * Placement by products report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreatePlacementByProductsReport
      *
@@ -242,7 +242,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Отчёт о размещении по поставкам. Возвращает код отчёта для self::info.
+     * Placement by supplies report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreatePlacementBySuppliesReport
      *
@@ -257,7 +257,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Отчёт о продажах маркированных товаров. Возвращает код отчёта для self::info.
+     * Marked products sales report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateMarkedProductsSalesReport
      *
@@ -274,7 +274,7 @@ class ReportService extends AbstractService
     }
 
     /**
-     * Позаказный отчёт о реализации товаров. Возвращает код отчёта для self::info.
+     * Per-order products realization report. Returns a report code for self::info.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateRealizationPostingReport
      *
