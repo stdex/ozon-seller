@@ -18,6 +18,7 @@ foreach ($whereIsAutoloader as $filepath) {
 }
 
 use Gam6itko\OzonSeller\Service\V1\ActionsService;
+use Gam6itko\OzonSeller\Service\V1\DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V1\DescriptionCategoryService;
 use Gam6itko\OzonSeller\Service\V1\Posting\FbsService as V1FbsService;
 use Gam6itko\OzonSeller\Service\V1\ProductService as V1ProductService;
@@ -25,6 +26,7 @@ use Gam6itko\OzonSeller\Service\V1\ReportService;
 use Gam6itko\OzonSeller\Service\V1\ReturnService as V1ReturnService;
 use Gam6itko\OzonSeller\Service\V1\SearchQueriesService;
 use Gam6itko\OzonSeller\Service\V1\SellerService;
+use Gam6itko\OzonSeller\Service\V2\DeliveryMethodService as V2DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V2\Posting\FbsService;
 use Gam6itko\OzonSeller\Service\V2\ProductService as V2ProductService;
 use Gam6itko\OzonSeller\Service\V2\WarehouseService;
@@ -42,6 +44,8 @@ const MAPPING = [
     // V1
     '/v1/actions'                                    => [ActionsService::class, 'list'],
     '/v1/roles'                                      => [SellerService::class, 'roles'],
+    '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
+    '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
     '/v1/search-queries/top'                         => [SearchQueriesService::class, 'top'],
     // multipart/form-data, транспорт библиотеки отправляет только JSON
@@ -59,6 +63,7 @@ const MAPPING = [
     '/v1/returns/list'                               => [V1ReturnService::class, 'list'],
 
     // V2
+    '/v2/delivery-method/list'                       => [V2DeliveryMethodService::class, 'list'],
     '/v2/fbs/posting/delivered'                      => [FbsService::class, 'delivered'],
     '/v2/fbs/posting/delivering'                     => [FbsService::class, 'delivering'],
     '/v2/fbs/posting/last-mile'                      => [FbsService::class, 'lastMile'],
