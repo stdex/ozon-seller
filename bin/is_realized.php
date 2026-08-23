@@ -23,6 +23,7 @@ use Gam6itko\OzonSeller\Service\V1\Posting\FbsService as V1FbsService;
 use Gam6itko\OzonSeller\Service\V1\ProductService as V1ProductService;
 use Gam6itko\OzonSeller\Service\V1\ReportService;
 use Gam6itko\OzonSeller\Service\V1\ReturnService as V1ReturnService;
+use Gam6itko\OzonSeller\Service\V1\SearchQueriesService;
 use Gam6itko\OzonSeller\Service\V1\SellerService;
 use Gam6itko\OzonSeller\Service\V2\Posting\FbsService;
 use Gam6itko\OzonSeller\Service\V2\ProductService as V2ProductService;
@@ -41,6 +42,8 @@ const MAPPING = [
     // V1
     '/v1/actions'                                    => [ActionsService::class, 'list'],
     '/v1/roles'                                      => [SellerService::class, 'roles'],
+    '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
+    '/v1/search-queries/top'                         => [SearchQueriesService::class, 'top'],
     // multipart/form-data, транспорт библиотеки отправляет только JSON
     '/v1/receipts/upload'                            => null,
     '/v1/description-category/tree'                    => [DescriptionCategoryService::class, 'getCategoryTree'],
