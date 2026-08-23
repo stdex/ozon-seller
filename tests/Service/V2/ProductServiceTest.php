@@ -433,4 +433,25 @@ class ProductServiceTest extends AbstractTestCase
             }
         );
     }
+
+    /**
+     * @covers ::certificationOptions
+     */
+    public function testCertificationOptions(): void
+    {
+        $this->quickTest(
+            'certificationOptions',
+            [],
+            [
+                'POST',
+                '/v2/product/certification/options',
+                null,
+            ],
+            '{"option":[{"name":"NAME","required":true},{"name":"FILES","required":true},{"name":"INFINITE","required":false}]}',
+            static function (array $result): void {
+                self::assertCount(3, $result['option']);
+                self::assertSame('FILES', $result['option'][1]['name']);
+            }
+        );
+    }
 }

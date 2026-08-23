@@ -43,6 +43,9 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  * @psalm-type TCertificationParamsResponse = array{
  *      params?: list<array{name?: TCertificateOptionName, required?: bool}>
  * }
+ * @psalm-type TCertificationOptionsResponse = array{
+ *      option?: list<array{name?: TCertificateOptionName, required?: bool}>
+ * }
  * @psalm-type TCertificateCreateResponse = array{
  *      certificate_id?: int,
  *      status?: 'INCOMPLETE'|'COMPLETED',
@@ -423,5 +426,18 @@ class ProductService extends AbstractService
         ]);
 
         return $this->request('POST', "{$this->path}/certification/params", ['params' => $params]);
+    }
+
+    /**
+     * Полный список параметров, из которых собирается сертификат качества,
+     * с признаком обязательности.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateOptions
+     *
+     * @return TCertificationOptionsResponse
+     */
+    public function certificationOptions(): array
+    {
+        return $this->request('POST', "{$this->path}/certification/options");
     }
 }
