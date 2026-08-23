@@ -39,6 +39,10 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  *      files?: list<TCertificateFile>,
  *      skus?: list<string>
  * }
+ * @psalm-type TCertificateOptionName = 'NAME'|'CERTIFICATE_TYPE'|'NUMBER'|'FILES'|'CERTIFICATE_COUNTRY'|'ACCORDANCE_TYPE'|'SKUS'|'ISSUE_DATE'|'EXPIRED_DATE'|'LINK_TO_REGISTRY'|'PRODUCT_TYPE'|'INFINITE'
+ * @psalm-type TCertificationParamsResponse = array{
+ *      params?: list<array{name?: TCertificateOptionName, required?: bool}>
+ * }
  * @psalm-type TCertificateCreateResponse = array{
  *      certificate_id?: int,
  *      status?: 'INCOMPLETE'|'COMPLETED',
@@ -378,5 +382,46 @@ class ProductService extends AbstractService
         }
 
         return $this->request('POST', "{$this->path}/certificate/create", ['params' => $params]);
+    }
+
+    /**
+     * Обязательные параметры для создания сертификата качества: какие поля
+     * нужно передать в self::certificateCreate для конкретного сертификата.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateParams
+     *
+     * @param TCertificateCreateParams|array<array-key, mixed> $params
+     *
+     * @return TCertificationParamsResponse
+     */
+    public function certificationParams(array $params = []): array
+    {
+        $params = ArrayHelper::pick($params, [
+            'accordance_type',
+            'certificate_country',
+            'certificate_type',
+            'expired_date',
+            'files',
+            'issue_date',
+            'link_to_registry',
+            'name',
+            'number',
+            'product_type',
+            'skus',
+        ]);
+
+        $params = TypeCaster::castArr($params, [
+            'accordance_type'     => 'str',
+            'certificate_country' => 'str',
+            'certificate_type'    => 'str',
+            'issue_date'          => 'str',
+            'link_to_registry'    => 'str',
+            'name'                => 'str',
+            'number'              => 'str',
+            'product_type'        => 'str',
+            'skus'                => 'arrOfStr',
+        ]);
+
+        return $this->request('POST', "{$this->path}/certification/params", ['params' => $params]);
     }
 }

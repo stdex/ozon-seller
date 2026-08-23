@@ -404,4 +404,33 @@ class ProductServiceTest extends AbstractTestCase
         );
         $svc->certificateCreate(['name' => 'cert', 'files' => [['name' => 'cert.pdf']]]);
     }
+
+    /**
+     * @covers ::certificationParams
+     */
+    public function testCertificationParams(): void
+    {
+        $this->quickTest(
+            'certificationParams',
+            [
+                [
+                    'certificate_type' => 'DECLARATION',
+                    'product_type'     => 'product',
+                    // must be filtered out
+                    'bar'              => 'baz',
+                ],
+            ],
+            [
+                'POST',
+                '/v2/product/certification/params',
+                '{"params":{"certificate_type":"DECLARATION","product_type":"product"}}',
+            ],
+            '{"params":[{"name":"NAME","required":true},{"name":"LINK_TO_REGISTRY","required":false}]}',
+            static function (array $result): void {
+                self::assertCount(2, $result['params']);
+                self::assertSame('NAME', $result['params'][0]['name']);
+                self::assertTrue($result['params'][0]['required']);
+            }
+        );
+    }
 }
