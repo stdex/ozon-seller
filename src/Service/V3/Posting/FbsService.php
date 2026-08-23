@@ -22,8 +22,16 @@ use Gam6itko\OzonSeller\Utils\WithResolver;
  *     barcodes?: bool,
  *     financial_data?: bool
  * }
+ * @psalm-type TStatusDate = array{
+ *     from?: string,
+ *     to?: string
+ * }
  * @psalm-type TListFilter = array{
  *     delivery_method_id?: list<int>,
+ *     integration_type_flow?: string,
+ *     is_blr_traceable?: bool,
+ *     is_quantum?: bool,
+ *     last_changed_status_date?: TStatusDate,
  *     order_id?: int,
  *     provider_id?: list<int>,
  *     status?: string,
@@ -44,6 +52,8 @@ use Gam6itko\OzonSeller\Utils\WithResolver;
  *     delivering_date_from?: string,
  *     delivering_date_to?: string,
  *     delivery_method_id?: list<int>,
+ *     is_quantum?: bool,
+ *     last_changed_status_date?: TStatusDate,
  *     provider_id?: list<int>,
  *     status?: string,
  *     warehouse_id?: list<int>
@@ -151,6 +161,10 @@ class FbsService extends AbstractService implements HasOrdersInterface, HasUnful
 
         $requestData['filter'] = ArrayHelper::pick($requestData['filter'], [
             'delivery_method_id',
+            'integration_type_flow',
+            'is_blr_traceable',
+            'is_quantum',
+            'last_changed_status_date',
             'order_id',
             'provider_id',
             'status',
@@ -199,6 +213,8 @@ class FbsService extends AbstractService implements HasOrdersInterface, HasUnful
             'delivering_date_from',
             'delivering_date_to',
             'delivery_method_id',
+            'is_quantum',
+            'last_changed_status_date',
             'provider_id',
             'status',
             'warehouse_id',

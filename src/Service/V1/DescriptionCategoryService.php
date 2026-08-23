@@ -50,8 +50,7 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  * }
  * @psalm-type TAttributeValuesSearchQuery = array{
  *     value: non-empty-string,
- *     limit?: positive-int,
- *     language?: TLanguage
+ *     limit?: positive-int
  * }
  * @psalm-type TTreeResponse = array{result: list<TCategoryNode>}
  * @psalm-type TAttributesResponse = array{result: list<TAttribute>}

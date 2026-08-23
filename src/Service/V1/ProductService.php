@@ -116,13 +116,15 @@ class ProductService extends AbstractService
         $income = ArrayHelper::pick($income, ['items']);
         foreach ($income['items'] as &$item) {
             $item = TypeCaster::castArr(
-                ArrayHelper::pick($item, ['sku', 'name', 'offer_id', 'price', 'old_price', 'premium_price', 'vat']),
+                // `premium_price` больше нет в swagger.json, оставлено для обратной совместимости
+                ArrayHelper::pick($item, ['sku', 'name', 'offer_id', 'price', 'old_price', 'premium_price', 'vat', 'currency_code']),
                 [
                     'offer_id'      => 'str',
                     'price'         => 'str',
                     'old_price'     => 'str',
                     'premium_price' => 'str',
                     'vat'           => 'str',
+                    'currency_code' => 'str',
                 ]
             );
         }
@@ -291,8 +293,18 @@ class ProductService extends AbstractService
                 'offer_id',
                 'price',
                 'old_price',
+                // `premium_price` больше нет в swagger.json, оставлено для обратной совместимости
                 'premium_price',
                 'min_price',
+                'net_price',
+                'currency_code',
+                'vat',
+                'quant_size',
+                'auto_action_enabled',
+                'auto_add_to_ozon_actions_list_enabled',
+                'min_price_for_auto_actions_enabled',
+                'price_strategy_enabled',
+                'manage_elastic_boosting_through_price',
             ])) {
                 throw new \InvalidArgumentException('Invalid price data at index '.$i);
             }
@@ -549,6 +561,7 @@ class ProductService extends AbstractService
      */
     public function picturesImport(array $query): array
     {
+        // `images360` и `primary_image` больше нет в swagger.json, оставлены для обратной совместимости
         $query = ArrayHelper::pick($query, ['color_image', 'images', 'images360', 'primary_image', 'product_id']);
         $query = TypeCaster::castArr($query, [
             'color_image'   => 'str',
@@ -611,6 +624,7 @@ class ProductService extends AbstractService
      *
      * @psalm-type TStocksQuery = array{
      *      sku?: int[],
+     *      offer_id?: string[],
      *      fbs_sku?: int[],
      * }
      * @psalm-type TStocks = array{
@@ -629,8 +643,9 @@ class ProductService extends AbstractService
      */
     public function infoStocksByWarehouseFbs(array $query): array
     {
-        $query = ArrayHelper::pick($query, ['sku', 'fbs_sku']);
-        $query = TypeCaster::castArr($query, ['sku' => 'arrayOfString', 'fbs_sku' => 'arrayOfString']);
+        // `fbs_sku` больше нет в swagger.json, оставлен для обратной совместимости
+        $query = ArrayHelper::pick($query, ['sku', 'offer_id', 'fbs_sku']);
+        $query = TypeCaster::castArr($query, ['sku' => 'arrayOfString', 'offer_id' => 'arrayOfString', 'fbs_sku' => 'arrayOfString']);
 
         return $this->request('POST', '/v1/product/info/stocks-by-warehouse/fbs', $query);
     }

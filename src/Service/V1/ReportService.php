@@ -69,13 +69,13 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportproducts
      *
-     * @param array{offer_id?: list<string>, search?: string, sku?: list<int>, visibility?: string} $query
+     * @param array{language?: string, offer_id?: list<string>, search?: string, sku?: list<int>, visibility?: string} $query
      *
      * @return array{code?: string}
      */
     public function products(array $query = [])
     {
-        $query = ArrayHelper::pick($query, ['offer_id', 'search', 'sku', 'visibility']);
+        $query = ArrayHelper::pick($query, ['language', 'offer_id', 'search', 'sku', 'visibility']);
         $query = array_filter($query);
 
         return $this->request('POST', '/v1/report/products/create', $query);

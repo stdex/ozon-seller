@@ -54,7 +54,7 @@ class ReturnService extends AbstractService
             'filter' => ArrayHelper::pick($filter, [
                 'logistic_return_date', 'storage_tariffication_start_date', 'visual_status_change_moment',
                 'order_id', 'posting_numbers', 'product_name', 'offer_id', 'visual_status_name', 'warehouse_id',
-                'barcode', 'return_schema'
+                'barcode', 'return_schema', 'compensation_status_id',
             ]),
             'last_id' => $lastId,
             'limit' => $limit,
