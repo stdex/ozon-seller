@@ -28,6 +28,9 @@ use Gam6itko\OzonSeller\Service\V1\ReportService;
 use Gam6itko\OzonSeller\Service\V1\ReturnService as V1ReturnService;
 use Gam6itko\OzonSeller\Service\V1\SearchQueriesService;
 use Gam6itko\OzonSeller\Service\V1\SellerService;
+use Gam6itko\OzonSeller\Service\V1\SupplyOrderService;
+use Gam6itko\OzonSeller\Service\V2\SupplyOrderService as V2SupplyOrderService;
+use Gam6itko\OzonSeller\Service\V3\SupplyOrderService as V3SupplyOrderService;
 use Gam6itko\OzonSeller\Service\V2\DeliveryMethodService as V2DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V2\Posting\FbsService;
 use Gam6itko\OzonSeller\Service\V2\ProductService as V2ProductService;
@@ -52,6 +55,26 @@ const MAPPING = [
     '/v1/cargoes-label/get'                          => [CargoesService::class, 'labelGet'],
     '/v1/cargoes-label/file/{file_guid}'             => [CargoesService::class, 'labelFile'],
     '/v1/posting/carriage-available/list'            => [CarriageService::class, 'availableList'],
+    '/v1/supply-order/status/counter'          => [SupplyOrderService::class, 'statusCounter'],
+    '/v1/supply-order/bundle'                  => [SupplyOrderService::class, 'bundle'],
+    '/v1/supply-order/details'                 => [SupplyOrderService::class, 'details'],
+    '/v1/supply-order/cancel'                  => [SupplyOrderService::class, 'cancel'],
+    '/v1/supply-order/cancel/status'           => [SupplyOrderService::class, 'cancelStatus'],
+    '/v1/supply-order/timeslot/get'            => [SupplyOrderService::class, 'timeslotGet'],
+    '/v1/supply-order/timeslot/update'         => [SupplyOrderService::class, 'timeslotUpdate'],
+    '/v1/supply-order/timeslot/status'         => [SupplyOrderService::class, 'timeslotStatus'],
+    '/v1/supply-order/pass/create'             => [SupplyOrderService::class, 'passCreate'],
+    '/v1/supply-order/pass/status'             => [SupplyOrderService::class, 'passStatus'],
+    '/v1/supply-order/content/update'          => [SupplyOrderService::class, 'contentUpdate'],
+    '/v1/supply-order/content/update/status'   => [SupplyOrderService::class, 'contentUpdateStatus'],
+    '/v1/supply-order/content/update/validation'  => [SupplyOrderService::class, 'contentUpdateValidation'],
+    '/v1/supply-order/act/summary/get'         => [SupplyOrderService::class, 'actSummaryGet'],
+    '/v1/supply-order/act/product/get'         => [SupplyOrderService::class, 'actProductGet'],
+    '/v1/supply-order/act/accept'              => [SupplyOrderService::class, 'actAccept'],
+    '/v1/supply-order/act/accept/status'       => [SupplyOrderService::class, 'actAcceptStatus'],
+    '/v2/supply-order/timeslot/list'                  => [V2SupplyOrderService::class, 'timeslotList'],
+    '/v3/supply-order/list'                          => [V3SupplyOrderService::class, 'list'],
+    '/v3/supply-order/get'                           => [V3SupplyOrderService::class, 'get'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
