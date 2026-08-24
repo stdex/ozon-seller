@@ -23,6 +23,7 @@ use Gam6itko\OzonSeller\Service\V1\CarriageService;
 use Gam6itko\OzonSeller\Service\V1\DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V1\DescriptionCategoryService;
 use Gam6itko\OzonSeller\Service\V1\Posting\FbsService as V1FbsService;
+use Gam6itko\OzonSeller\Service\V1\PassService as V1PassService;
 use Gam6itko\OzonSeller\Service\V1\PricingStrategyService;
 use Gam6itko\OzonSeller\Service\V1\ProductService as V1ProductService;
 use Gam6itko\OzonSeller\Service\V1\ReportService;
@@ -107,6 +108,7 @@ const MAPPING = [
     '/v1/pricing-strategy/products/delete'       => [PricingStrategyService::class, 'productsDelete'],
     '/v1/pricing-strategy/product/info'          => [PricingStrategyService::class, 'productInfo'],
     '/v1/pricing-strategy/strategy-ids-by-product-ids'  => [PricingStrategyService::class, 'strategyIdsByProductIds'],
+    '/v1/pass/list'                                  => [V1PassService::class, 'list'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
