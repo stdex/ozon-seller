@@ -47,6 +47,7 @@ use Gam6itko\OzonSeller\Utils\WithResolver;
  *  }
  * @psalm-type TListFilter = array{
  *     delivery_method_ids?: int[],
+ *     integration_type_flow?: string,
  *     is_blr_traceable?: bool,
  *     last_changed_status_date?: TListStatusDate,
  *     order_id?: int,
@@ -161,6 +162,7 @@ class FbsService extends AbstractService
 
         $requestData['filter'] = ArrayHelper::pick($requestData['filter'], [
             'delivery_method_ids',
+            'integration_type_flow',
             'is_blr_traceable',
             'last_changed_status_date',
             'order_id',

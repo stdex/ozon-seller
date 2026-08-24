@@ -20,6 +20,18 @@ class WithResolverTest extends TestCase
 
     public function dataResolve(): iterable
     {
+
+        // v3 fbo
+        yield [
+            ['with' => ['analytics_data' => true, 'barcodes' => true]],
+            [
+                'analytics_data' => true,
+                'financial_data' => false,
+                'legal_info'     => false,
+            ],
+            3,
+            PostingScheme::FBO,
+        ];
         yield [
             [
                 'with' => ['foo' => 1, 'bar' => 3, 'analytics_data' => true],

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Gam6itko\OzonSeller\Service\V5\Posting;
 
 use Gam6itko\OzonSeller\Service\AbstractService;
+use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 
 class FbsService extends AbstractService
@@ -35,5 +36,42 @@ class FbsService extends AbstractService
             'products' => $products,
         ];
         return $this->request('POST', "{$this->path}/product/exemplar/set", $body);
+    }
+
+    /**
+     * Status of the exemplars check.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_FbsPostingProductExemplarStatusV5
+     *
+     * @return array{posting_number?: string, status?: string, products?: list<array>}
+     */
+    public function productExemplarStatus(string $postingNumber): array
+    {
+        return $this->request('POST', '/v5/fbs/posting/product/exemplar/status', [
+            'posting_number' => $postingNumber,
+        ]);
+    }
+
+    /**
+     * Validates the marking codes of the posting exemplars.
+     *
+     * Nested `exemplars` of every product is passed as is.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_FbsPostingProductExemplarValidateV5
+     *
+     * @param list<array{product_id: int, exemplars: list<array>}> $products
+     *
+     * @return array{products?: list<array>}
+     */
+    public function productExemplarValidate(string $postingNumber, array $products): array
+    {
+        $products = array_map(static function (array $product): array {
+            return ArrayHelper::pick($product, ['product_id', 'exemplars']);
+        }, $products);
+
+        return $this->request('POST', '/v5/fbs/posting/product/exemplar/validate', [
+            'posting_number' => $postingNumber,
+            'products'       => $products,
+        ]);
     }
 }

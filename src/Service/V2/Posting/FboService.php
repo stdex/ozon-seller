@@ -31,9 +31,11 @@ class FboService extends AbstractService implements HasOrdersInterface, GetOrder
     private $path = '/v2/posting/fbo';
 
     /**
-     * @see https://cb-api.ozonru.me/apiref/en/#t-fbo_list
-     *
      * @param TListRequestData|array<array-key, mixed> $requestData
+     *
+     *@see https://cb-api.ozonru.me/apiref/en/#t-fbo_list
+     *
+     * @deprecated will be removed 31.08.2026 - use /v3/posting/fbo/list
      */
     public function list(array $requestData = []): array
     {

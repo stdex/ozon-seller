@@ -58,4 +58,58 @@ class ReturnsServiceTest extends AbstractTestCase
 
         yield ['boom'];
     }
+
+    /**
+     * @covers ::rfbsList
+     */
+    public function testRfbsList(): void
+    {
+        $this->quickTest(
+            'rfbsList',
+            [
+                [
+                    'filter' => [
+                        'offer_id'       => '9789785079999',
+                        'posting_number' => '33920474-0032-1',
+                        'group_state'    => ['Approved'],
+                        'created_at'     => [
+                            'from' => '2026-08-01T00:00:00Z',
+                            'to'   => '2026-08-08T00:00:00Z',
+                            // must be filtered out
+                            'foo'  => 'bar',
+                        ],
+                        // must be filtered out
+                        'baz' => 'qux',
+                    ],
+                    'limit'   => '50',
+                    'last_id' => '10',
+                ],
+            ],
+            [
+                'POST',
+                '/v2/returns/rfbs/list',
+                '{"limit":50,"filter":{"offer_id":"9789785079999","posting_number":"33920474-0032-1","group_state":["Approved"],"created_at":{"from":"2026-08-01T00:00:00Z","to":"2026-08-08T00:00:00Z"}},"last_id":10}',
+            ],
+            '{"returns":{}}',
+            static function (array $result): void {
+                self::assertSame(['returns' => []], $result);
+            }
+        );
+    }
+
+    /**
+     * @covers ::rfbsGet
+     */
+    public function testRfbsGet(): void
+    {
+        $this->quickTest(
+            'rfbsGet',
+            [123],
+            ['POST', '/v2/returns/rfbs/get', '{"return_id":123}'],
+            '{"returns":{"return_number":"1234"}}',
+            static function (array $result): void {
+                self::assertSame(['returns' => ['return_number' => '1234']], $result);
+            }
+        );
+    }
 }

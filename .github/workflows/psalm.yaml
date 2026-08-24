@@ -1,5 +1,10 @@
 name: psalm
 
+# The dev dependency guzzlehttp/psr7 ^1.6 is affected by a security advisory, so
+# composer >= 2.9 refuses to install it and the whole matrix fails on install.
+env:
+  COMPOSER_NO_SECURITY_BLOCKING: 1
+
 on:
   pull_request:
   push:

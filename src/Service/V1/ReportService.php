@@ -6,6 +6,7 @@ namespace Gam6itko\OzonSeller\Service\V1;
 
 use Gam6itko\OzonSeller\Enum\TransactionType;
 use Gam6itko\OzonSeller\Service\AbstractService;
+use Gam6itko\OzonSeller\TypeCaster;
 use Gam6itko\OzonSeller\Utils\ArrayHelper;
 
 /**
@@ -14,6 +15,49 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  * @see https://cb-api.ozonru.me/apiref/en/#t-title_seller_reports
  *
  * @author Alexander Strizhak <gam6itko@gmail.com>
+ *
+ * @psalm-type TReportType = 'SELLER_PRODUCTS'|'SELLER_STOCK'|'SELLER_RETURNS'|'SELLER_POSTINGS'|'SELLER_DISCOUNTED'|'MUTUAL_SETTLEMENT'|'COMPENSATION_REPORT'|'DECOMPENSATION_REPORT'|'MARKED_PRODUCTS_SALES'|'SELLER_PLACEMENT_BY_PRODUCTS'|'SELLER_PLACEMENT_BY_SUPPLIES'
+ * @psalm-type TReport = array{
+ *     code?: string,
+ *     created_at?: string,
+ *     expires_at?: string,
+ *     error?: string,
+ *     file?: string,
+ *     params?: array<string, string>,
+ *     report_type?: TReportType,
+ *     status?: string,
+ *     additional_data?: list<array{key?: string, value?: string}>
+ * }
+ * @psalm-type TReportList = array{
+ *     reports?: list<TReport>,
+ *     total?: int
+ * }
+ * @psalm-type TReportCodeResult = array{code?: string}
+ * @psalm-type TPostingsFilter = array{
+ *     processed_at_from: string,
+ *     processed_at_to: string,
+ *     delivery_schema: list<string>,
+ *     cancel_reason_id?: list<int>,
+ *     delivery_method_id?: list<int>,
+ *     is_express?: bool,
+ *     offer_id?: string,
+ *     sku?: list<int>,
+ *     status_alias?: list<string>,
+ *     statuses?: list<int>,
+ *     title?: string,
+ *     warehouse_id?: list<int>
+ * }
+ * @psalm-type TPostingsWith = array{
+ *     additional_data?: bool,
+ *     analytics_data?: bool,
+ *     customer_data?: bool,
+ *     jewelry_codes?: bool
+ * }
+ * @psalm-type TPostingsRequest = array{
+ *     filter: TPostingsFilter,
+ *     language?: string,
+ *     with?: TPostingsWith
+ * }
  */
 class ReportService extends AbstractService
 {
@@ -22,7 +66,9 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportlist
      *
-     * @return array|string
+     * @param array{page?: int, page_size?: int, report_type?: TReportType} $query
+     *
+     * @return TReportList|string
      */
     public function list(array $query)
     {
@@ -36,7 +82,7 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportinfo
      *
-     * @return array|string
+     * @return TReport|string
      */
     public function info(?string $code = null)
     {
@@ -50,13 +96,13 @@ class ReportService extends AbstractService
      *
      * @see https://cb-api.ozonru.me/apiref/en/#t-title_post_reportproducts
      *
-     * @param array $query ['offer_id', 'search', 'sku', 'visibility']
+     * @param array{language?: string, offer_id?: list<string>, search?: string, sku?: list<int>, visibility?: string} $query
      *
-     * @return array
+     * @return array{code?: string}
      */
     public function products(array $query = [])
     {
-        $query = ArrayHelper::pick($query, ['offer_id', 'search', 'sku', 'visibility']);
+        $query = ArrayHelper::pick($query, ['language', 'offer_id', 'search', 'sku', 'visibility']);
         $query = array_filter($query);
 
         return $this->request('POST', '/v1/report/products/create', $query);
@@ -79,5 +125,166 @@ class ReportService extends AbstractService
         ]);
 
         return $this->request('POST', '/v1/report/transactions/create', $query);
+    }
+
+    /**
+     * Postings report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_ReportPostingCreate
+     *
+     * @param TPostingsRequest $requestData
+     *
+     * @return TReportCodeResult
+     */
+    public function postingsCreate(array $requestData): array
+    {
+        $requestData = array_merge(
+            ['language' => 'DEFAULT'],
+            ArrayHelper::pick($requestData, ['filter', 'language', 'with'])
+        );
+
+        if (isset($requestData['filter'])) {
+            $requestData['filter'] = TypeCaster::castArr(
+                ArrayHelper::pick($requestData['filter'], [
+                    'processed_at_from',
+                    'processed_at_to',
+                    'delivery_schema',
+                    'cancel_reason_id',
+                    'delivery_method_id',
+                    'is_express',
+                    'offer_id',
+                    'sku',
+                    'status_alias',
+                    'statuses',
+                    'title',
+                    'warehouse_id',
+                ]),
+                [
+                    'processed_at_from'  => 'str',
+                    'processed_at_to'    => 'str',
+                    'delivery_schema'    => 'arrOfStr',
+                    'cancel_reason_id'   => 'arrOfInt',
+                    'delivery_method_id' => 'arrOfInt',
+                    'is_express'         => 'bool',
+                    'offer_id'           => 'str',
+                    'sku'                => 'arrOfInt',
+                    'status_alias'       => 'arrOfStr',
+                    'statuses'           => 'arrOfInt',
+                    'title'              => 'str',
+                    'warehouse_id'       => 'arrOfInt',
+                ]
+            );
+        }
+
+        if (isset($requestData['with'])) {
+            $requestData['with'] = TypeCaster::castArr(
+                ArrayHelper::pick($requestData['with'], [
+                    'additional_data',
+                    'analytics_data',
+                    'customer_data',
+                    'jewelry_codes',
+                ]),
+                [
+                    'additional_data' => 'bool',
+                    'analytics_data'  => 'bool',
+                    'customer_data'   => 'bool',
+                    'jewelry_codes'   => 'bool',
+                ]
+            );
+        }
+
+        return $this->request('POST', '/v1/report/postings/create', $requestData);
+    }
+
+    /**
+     * Discounted products report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateDiscountedReport
+     *
+     * @return TReportCodeResult
+     */
+    public function discountedCreate(): array
+    {
+        return $this->request('POST', '/v1/report/discounted/create', '{}');
+    }
+
+    /**
+     * FBS warehouse stock report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_WarehouseStock
+     *
+     * @param list<int|string> $warehouseIds
+     * @param string           $language     DEFAULT|RU|EN
+     *
+     * @return TReportCodeResult
+     */
+    public function warehouseStock(array $warehouseIds, string $language = 'DEFAULT'): array
+    {
+        return $this->request('POST', '/v1/report/warehouse/stock', [
+            'warehouseId' => array_map('strval', $warehouseIds),
+            'language'    => $language,
+        ]);
+    }
+
+    /**
+     * Placement by products report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreatePlacementByProductsReport
+     *
+     * @return TReportCodeResult
+     */
+    public function placementByProductsCreate(string $dateFrom, string $dateTo): array
+    {
+        return $this->request('POST', '/v1/report/placement/by-products/create', [
+            'date_from' => $dateFrom,
+            'date_to'   => $dateTo,
+        ]);
+    }
+
+    /**
+     * Placement by supplies report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreatePlacementBySuppliesReport
+     *
+     * @return TReportCodeResult
+     */
+    public function placementBySuppliesCreate(string $dateFrom, string $dateTo): array
+    {
+        return $this->request('POST', '/v1/report/placement/by-supplies/create', [
+            'date_from' => $dateFrom,
+            'date_to'   => $dateTo,
+        ]);
+    }
+
+    /**
+     * Marked products sales report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateMarkedProductsSalesReport
+     *
+     * @return TReportCodeResult
+     */
+    public function markedProductsSalesCreate(string $dateFrom, string $dateTo): array
+    {
+        return $this->request('POST', '/v1/report/marked-products-sales/create', [
+            'date' => [
+                'from' => $dateFrom,
+                'to'   => $dateTo,
+            ],
+        ]);
+    }
+
+    /**
+     * Per-order products realization report. Returns a report code for self::info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ReportAPI_CreateRealizationPostingReport
+     *
+     * @return TReportCodeResult
+     */
+    public function realizationPostingCreate(int $year, int $month): array
+    {
+        return $this->request('POST', '/v1/report/realization/posting/create', [
+            'year'  => $year,
+            'month' => $month,
+        ]);
     }
 }

@@ -116,13 +116,15 @@ class ProductService extends AbstractService
         $income = ArrayHelper::pick($income, ['items']);
         foreach ($income['items'] as &$item) {
             $item = TypeCaster::castArr(
-                ArrayHelper::pick($item, ['sku', 'name', 'offer_id', 'price', 'old_price', 'premium_price', 'vat']),
+                // `premium_price` is gone from swagger.json, kept for backward compatibility
+                ArrayHelper::pick($item, ['sku', 'name', 'offer_id', 'price', 'old_price', 'premium_price', 'vat', 'currency_code']),
                 [
                     'offer_id'      => 'str',
                     'price'         => 'str',
                     'old_price'     => 'str',
                     'premium_price' => 'str',
                     'vat'           => 'str',
+                    'currency_code' => 'str',
                 ]
             );
         }
@@ -291,8 +293,18 @@ class ProductService extends AbstractService
                 'offer_id',
                 'price',
                 'old_price',
+                // `premium_price` is gone from swagger.json, kept for backward compatibility
                 'premium_price',
                 'min_price',
+                'net_price',
+                'currency_code',
+                'vat',
+                'quant_size',
+                'auto_action_enabled',
+                'auto_add_to_ozon_actions_list_enabled',
+                'min_price_for_auto_actions_enabled',
+                'price_strategy_enabled',
+                'manage_elastic_boosting_through_price',
             ])) {
                 throw new \InvalidArgumentException('Invalid price data at index '.$i);
             }
@@ -528,6 +540,7 @@ class ProductService extends AbstractService
     }
 
     /**
+     * @deprecated will be removed 31.08.2026 - use /v2/product/certification/options, /v2/product/certification/params and /v2/product/certificate/create
      * @see https://docs.ozon.ru/api/seller#/certificate/create-post
      */
     public function certificateCreate(array $data): int
@@ -548,6 +561,7 @@ class ProductService extends AbstractService
      */
     public function picturesImport(array $query): array
     {
+        // `images360` and `primary_image` are gone from swagger.json, kept for backward compatibility
         $query = ArrayHelper::pick($query, ['color_image', 'images', 'images360', 'primary_image', 'product_id']);
         $query = TypeCaster::castArr($query, [
             'color_image'   => 'str',
@@ -601,7 +615,7 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Receive stocks in seller's warehouses (FBS и rFBS).
+     * Receive stocks in seller's warehouses (FBS and rFBS).
      * fbs-sku param is deprecated since August 15, 2023.
      *
      * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductStocksByWarehouseFbs
@@ -610,6 +624,7 @@ class ProductService extends AbstractService
      *
      * @psalm-type TStocksQuery = array{
      *      sku?: int[],
+     *      offer_id?: string[],
      *      fbs_sku?: int[],
      * }
      * @psalm-type TStocks = array{
@@ -628,8 +643,9 @@ class ProductService extends AbstractService
      */
     public function infoStocksByWarehouseFbs(array $query): array
     {
-        $query = ArrayHelper::pick($query, ['sku', 'fbs_sku']);
-        $query = TypeCaster::castArr($query, ['sku' => 'arrayOfString', 'fbs_sku' => 'arrayOfString']);
+        // `fbs_sku` is gone from swagger.json, kept for backward compatibility
+        $query = ArrayHelper::pick($query, ['sku', 'offer_id', 'fbs_sku']);
+        $query = TypeCaster::castArr($query, ['sku' => 'arrayOfString', 'offer_id' => 'arrayOfString', 'fbs_sku' => 'arrayOfString']);
 
         return $this->request('POST', '/v1/product/info/stocks-by-warehouse/fbs', $query);
     }
@@ -653,5 +669,517 @@ class ProductService extends AbstractService
         }
 
         return $this->request('POST', '/v1/product/update/discount', $query);
+    }
+
+    /**
+     * Placement zones of products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductPlacementZoneInfo
+     *
+     * @param list<int|string> $skus
+     *
+     * @return array{products_placement?: list<array>}
+     */
+    public function placementZoneInfo(array $skus): array
+    {
+        return $this->request('POST', '/v1/product/placement-zone/info', [
+            'skus' => array_map('strval', $skus),
+        ]);
+    }
+
+    /**
+     * Updates product attributes.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductUpdateAttributes
+     *
+     * @param list<array{offer_id: string, attributes?: list<array>}> $items
+     *
+     * @return array{task_id?: int}
+     */
+    public function attributesUpdate(array $items): array
+    {
+        $items = array_map(static function (array $item): array {
+            return ArrayHelper::pick($item, ['offer_id', 'attributes']);
+        }, $items);
+
+        return $this->request('POST', '/v1/product/attributes/update', ['items' => $items]);
+    }
+
+    /**
+     * Changes product offer ids.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductUpdateOfferID
+     *
+     * @param list<array{offer_id: string, new_offer_id: string}> $updateOfferId
+     *
+     * @return array{errors?: list<array>}
+     */
+    public function updateOfferId(array $updateOfferId): array
+    {
+        $updateOfferId = array_map(static function (array $pair): array {
+            return TypeCaster::castArr(
+                ArrayHelper::pick($pair, ['offer_id', 'new_offer_id']),
+                ['offer_id' => 'str', 'new_offer_id' => 'str']
+            );
+        }, $updateOfferId);
+
+        return $this->request('POST', '/v1/product/update/offer-id', ['update_offer_id' => $updateOfferId]);
+    }
+
+    /**
+     * Number of customers who subscribed to a product.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_GetProductInfoSubscription
+     *
+     * @param list<int|string> $skus
+     *
+     * @return list<array{sku?: int, count?: int}>
+     */
+    public function infoSubscription(array $skus): array
+    {
+        return $this->request('POST', '/v1/product/info/subscription', [
+            'skus' => array_map('strval', $skus),
+        ]);
+    }
+
+    /**
+     * Related SKUs of a product.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_GetRelatedSKU
+     *
+     * @param list<int|string> $skus
+     *
+     * @return array{items?: list<array>, errors?: list<array>}
+     */
+    public function relatedSkuGet(array $skus): array
+    {
+        return $this->request('POST', '/v1/product/related-sku/get', [
+            'sku' => array_map('strval', $skus),
+        ]);
+    }
+
+    /**
+     * Products with wrong volume weight.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductInfoWrongVolume
+     *
+     * @return array{products?: list<array>, cursor?: string}
+     */
+    public function infoWrongVolume(int $limit = 100, string $cursor = ''): array
+    {
+        $query = ['limit' => $limit];
+
+        if ('' !== $cursor) {
+            $query['cursor'] = $cursor;
+        }
+
+        return $this->request('POST', '/v1/product/info/wrong-volume', $query);
+    }
+
+    /**
+     * Stocks of a specific warehouse.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductInfoWarehouseStocks
+     *
+     * @return array{stocks?: list<array>, cursor?: string, has_next?: bool}
+     */
+    public function infoWarehouseStocks(int $warehouseId, int $limit = 100, string $cursor = ''): array
+    {
+        $query = [
+            'warehouse_id' => $warehouseId,
+            'limit'        => $limit,
+        ];
+
+        if ('' !== $cursor) {
+            $query['cursor'] = $cursor;
+        }
+
+        return $this->request('POST', '/v1/product/info/warehouse/stocks', $query);
+    }
+
+    /**
+     * Restarts the promotion timer of products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductActionTimerUpdate
+     *
+     * @param list<int|string> $productIds
+     */
+    public function actionTimerUpdate(array $productIds): array
+    {
+        return $this->request('POST', '/v1/product/action/timer/update', [
+            'product_ids' => array_map('strval', $productIds),
+        ]);
+    }
+
+    /**
+     * Promotion timer status of products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductActionTimerStatus
+     *
+     * @param list<int|string> $productIds
+     *
+     * @return array{statuses?: list<array>}
+     */
+    public function actionTimerStatus(array $productIds): array
+    {
+        return $this->request('POST', '/v1/product/action/timer/status', [
+            'product_ids' => array_map('strval', $productIds),
+        ]);
+    }
+
+    /**
+     * Info about markdown products and their main products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_GetProductInfoDiscounted
+     *
+     * @param list<int|string> $discountedSkus
+     *
+     * @return array{items?: list<array>}
+     */
+    public function infoDiscounted(array $discountedSkus): array
+    {
+        return $this->request('POST', '/v1/product/info/discounted', [
+            'discounted_skus' => array_map('strval', $discountedSkus),
+        ]);
+    }
+
+    /**
+     * FBO stocks by warehouse.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductStocksByWarehouseFbo
+     *
+     * @param array{skus?: list<string>, offer_ids?: list<string>, limit?: int, cursor?: string} $query
+     *
+     * @return array{products?: list<array>, cursor?: string, has_next?: bool}
+     */
+    public function infoStocksByWarehouseFbo(array $query = []): array
+    {
+        $query = array_merge(
+            ['limit' => 100],
+            ArrayHelper::pick($query, ['skus', 'offer_ids', 'limit', 'cursor'])
+        );
+
+        $query = TypeCaster::castArr($query, [
+            'skus'      => 'arrOfStr',
+            'offer_ids' => 'arrOfStr',
+            'limit'     => 'int',
+            'cursor'    => 'str',
+        ]);
+
+        return $this->request('POST', '/v1/product/info/stocks-by-warehouse/fbo', $query);
+    }
+
+    /**
+     * Updates stocks of digital products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductsDigitalStocksImport
+     *
+     * @param list<array{offer_id: string, stock: int}> $stocks
+     *
+     * @return array{status?: list<array>}
+     */
+    public function digitalStocksImport(array $stocks): array
+    {
+        $stocks = array_map(static function (array $stock): array {
+            return TypeCaster::castArr(
+                ArrayHelper::pick($stock, ['offer_id', 'stock']),
+                ['offer_id' => 'str', 'stock' => 'int']
+            );
+        }, $stocks);
+
+        return $this->request('POST', '/v1/product/digital/stocks/import', ['stocks' => $stocks]);
+    }
+
+    /**
+     * Sets the quantity discount ladder.
+     *
+     * Nested `stairway` is passed as is.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_SetProductStairwayDiscountByQuantity
+     *
+     * @param list<array{sku: int, enabled: bool, stairway: array}> $stairways
+     *
+     * @return array{accepted?: bool, errors?: list<array>, warnings?: list<array>}
+     */
+    public function stairwayDiscountByQuantitySet(array $stairways, bool $suppressWarnings = false): array
+    {
+        $stairways = array_map(static function (array $stairway): array {
+            return TypeCaster::castArr(
+                ArrayHelper::pick($stairway, ['sku', 'enabled', 'stairway']),
+                ['sku' => 'int', 'enabled' => 'bool']
+            );
+        }, $stairways);
+
+        return $this->request('POST', '/v1/product/stairway-discount/by-quantity/set', [
+            'stairways'         => $stairways,
+            'suppress_warnings' => $suppressWarnings,
+        ]);
+    }
+
+    /**
+     * Quantity discount ladder of products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_GetProductStairwayDiscountByQuantity
+     *
+     * @param list<int|string> $skus
+     *
+     * @return array{stairways?: list<array>}
+     */
+    public function stairwayDiscountByQuantityGet(array $skus): array
+    {
+        return $this->request('POST', '/v1/product/stairway-discount/by-quantity/get', [
+            'skus' => array_map('strval', $skus),
+        ]);
+    }
+
+    /**
+     * Sets where products are placed.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductVisibilitySet
+     *
+     * @param list<array{sku: int, placement: string}> $itemPlacement
+     *
+     * @return array{items?: list<array>, items_errors?: list<array>}
+     */
+    public function visibilitySet(array $itemPlacement): array
+    {
+        $itemPlacement = array_map(static function (array $item): array {
+            return TypeCaster::castArr(
+                ArrayHelper::pick($item, ['sku', 'placement']),
+                ['sku' => 'int', 'placement' => 'str']
+            );
+        }, $itemPlacement);
+
+        return $this->request('POST', '/v1/product/visibility/set', ['item_placement' => $itemPlacement]);
+    }
+
+    /**
+     * Where products are placed.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductVisibilityInfo
+     *
+     * @param list<int|string> $skus
+     *
+     * @return array{items?: list<array>}
+     */
+    public function visibilityInfo(array $skus = []): array
+    {
+        $query = [];
+
+        if ($skus) {
+            $query['skus'] = array_map('strval', $skus);
+        }
+
+        return $this->request('POST', '/v1/product/visibility/info', $query ?: '{}');
+    }
+
+    /**
+     * Economy products (quants) list.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_GetProductQuantList
+     *
+     * @return array{products?: list<array>, cursor?: string, total_items?: int}
+     */
+    public function quantList(int $limit = 100, string $cursor = '', string $visibility = ''): array
+    {
+        $query = ['limit' => $limit];
+
+        if ('' !== $cursor) {
+            $query['cursor'] = $cursor;
+        }
+
+        if ('' !== $visibility) {
+            $query['visibility'] = $visibility;
+        }
+
+        return $this->request('POST', '/v1/product/quant/list', $query);
+    }
+
+    /**
+     * Economy products (quants) info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_GetProductQuantInfo
+     *
+     * @param list<string> $quantCodes
+     *
+     * @return array{items?: list<array>}
+     */
+    public function quantInfo(array $quantCodes): array
+    {
+        return $this->request('POST', '/v1/product/quant/info', [
+            'quant_code' => array_map('strval', $quantCodes),
+        ]);
+    }
+
+    /**
+     * Price details of products.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductPricesDetails
+     *
+     * @param list<int|string> $skus
+     *
+     * @return array{prices?: list<array>}
+     */
+    public function pricesDetails(array $skus): array
+    {
+        return $this->request('POST', '/v1/product/prices/details', [
+            'skus' => array_map('strval', $skus),
+        ]);
+    }
+
+    /**
+     * Certificates list.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateList
+     *
+     * @param array{offer_id?: string, status?: string, type?: string, page?: int, page_size?: int} $query
+     *
+     * @return array{certificates?: list<array>, page_count?: int}
+     */
+    public function certificateList(array $query = []): array
+    {
+        $query = array_merge(
+            ['page' => 1, 'page_size' => 100],
+            ArrayHelper::pick($query, ['offer_id', 'status', 'type', 'page', 'page_size'])
+        );
+
+        $query = TypeCaster::castArr($query, [
+            'offer_id'  => 'str',
+            'status'    => 'str',
+            'type'      => 'str',
+            'page'      => 'int',
+            'page_size' => 'int',
+        ]);
+
+        return $this->request('POST', '/v1/product/certificate/list', $query);
+    }
+
+    /**
+     * Certificate info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateInfo
+     *
+     * @return array<string, mixed>
+     */
+    public function certificateInfo(string $certificateNumber): array
+    {
+        return $this->request('POST', '/v1/product/certificate/info', [
+            'certificate_number' => $certificateNumber,
+        ]);
+    }
+
+    /**
+     * Deletes a certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateDelete
+     *
+     * @return array{is_delete?: bool, error_message?: string}
+     */
+    public function certificateDelete(int $certificateId): array
+    {
+        return $this->request('POST', '/v1/product/certificate/delete', [
+            'certificate_id' => $certificateId,
+        ]);
+    }
+
+    /**
+     * Unbinds products from a certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateUnbind
+     *
+     * @param array{product_id?: list<string>, skus?: list<string>} $query
+     *
+     * @return list<array{product_id?: int, updated?: bool, error?: string}>
+     */
+    public function certificateUnbind(int $certificateId, array $query = []): array
+    {
+        $query = TypeCaster::castArr(
+            ArrayHelper::pick($query, ['product_id', 'skus']),
+            ['product_id' => 'arrOfStr', 'skus' => 'arrOfStr']
+        );
+
+        $query['certificate_id'] = $certificateId;
+
+        return $this->request('POST', '/v1/product/certificate/unbind', $query);
+    }
+
+    /**
+     * Products bound to a certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateProductsList
+     *
+     * @param array{last_id?: int, limit?: int, product_status_code?: string, page?: int, page_size?: int} $query
+     *
+     * @return array{items?: list<array>, count?: int}
+     */
+    public function certificateProductsList(int $certificateId, array $query = []): array
+    {
+        $query = TypeCaster::castArr(
+            ArrayHelper::pick($query, ['last_id', 'limit', 'product_status_code', 'page', 'page_size']),
+            [
+                'last_id'             => 'int',
+                'limit'               => 'int',
+                'product_status_code' => 'str',
+                'page'                => 'int',
+                'page_size'           => 'int',
+            ]
+        );
+
+        $query['certificate_id'] = $certificateId;
+
+        return $this->request('POST', '/v1/product/certificate/products/list', $query);
+    }
+
+    /**
+     * Possible statuses of a product bound to a certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateProductStatusList
+     *
+     * @return list<array{code?: string, name?: string}>
+     */
+    public function certificateProductStatusList(): array
+    {
+        return $this->request('POST', '/v1/product/certificate/product_status/list', '{}');
+    }
+
+    /**
+     * Possible certificate statuses.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateStatusList
+     *
+     * @return list<array{code?: string, name?: string}>
+     */
+    public function certificateStatusList(): array
+    {
+        return $this->request('POST', '/v1/product/certificate/status/list', '{}');
+    }
+
+    /**
+     * Possible certificate rejection reasons.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateRejectionReasonsList
+     *
+     * @return list<array{code?: string, name?: string}>
+     */
+    public function certificateRejectionReasonsList(): array
+    {
+        return $this->request('POST', '/v1/product/certificate/rejection_reasons/list', '{}');
+    }
+
+    /**
+     * Categories that require a certificate.
+     *
+     * @deprecated use \Gam6itko\OzonSeller\Service\V2\ProductService::certificationList
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificationList
+     *
+     * @return array{certification?: list<array>, total?: int}
+     */
+    public function certificationList(int $page = 1, int $pageSize = 100): array
+    {
+        return $this->request('POST', '/v1/product/certification/list', [
+            'page'      => $page,
+            'page_size' => $pageSize,
+        ]);
     }
 }

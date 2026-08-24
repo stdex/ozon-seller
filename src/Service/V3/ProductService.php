@@ -154,7 +154,7 @@ class ProductService extends AbstractService
     public function list(array $filter, string $lastId = '', int $limit = 100): array
     {
         $body = [
-            'filter'  => ArrayHelper::pick($filter, ['offer_id', 'product_id', 'visibility']) ?: new \stdClass(),
+            'filter'  => ArrayHelper::pick($filter, ['offer_id', 'product_id', 'skus', 'visibility']) ?: new \stdClass(),
             'last_id' => $lastId,
             'limit'   => $limit,
         ];

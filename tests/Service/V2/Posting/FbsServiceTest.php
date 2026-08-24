@@ -405,4 +405,119 @@ class FbsServiceTest extends AbstractTestCase
 
     }
 
+    /**
+     * @covers ::actList
+     */
+    public function testActList(): void
+    {
+        $this->quickTest(
+            'actList',
+            [
+                [
+                    'filter' => [
+                        'date_from'        => '2026-08-01',
+                        'date_to'          => '2026-08-08',
+                        'integration_type' => 'ozon',
+                        'status'           => ['FORMED'],
+                        // must be filtered out
+                        'foo'              => 'bar',
+                    ],
+                    'limit' => '50',
+                ],
+            ],
+            [
+                'POST',
+                '/v2/posting/fbs/act/list',
+                '{"limit":50,"filter":{"date_from":"2026-08-01","date_to":"2026-08-08","integration_type":"ozon","status":["FORMED"]}}',
+            ],
+            '{"result":[]}'
+        );
+    }
+
+    /**
+     * @covers ::actGetPostings
+     */
+    public function testActGetPostings(): void
+    {
+        $this->quickTest(
+            'actGetPostings',
+            [1234],
+            ['POST', '/v2/posting/fbs/act/get-postings', '{"id":1234}'],
+            '{"result":[]}'
+        );
+    }
+
+    /**
+     * @covers ::actGetBarcode
+     */
+    public function testActGetBarcode(): void
+    {
+        $this->quickTest(
+            'actGetBarcode',
+            [1234],
+            ['POST', '/v2/posting/fbs/act/get-barcode', '{"id":1234}'],
+            "\x89PNG",
+            static function ($result): void {
+                self::assertSame("\x89PNG", $result);
+            }
+        );
+    }
+
+    /**
+     * @covers ::actGetBarcodeText
+     */
+    public function testActGetBarcodeText(): void
+    {
+        $this->quickTest(
+            'actGetBarcodeText',
+            [1234],
+            ['POST', '/v2/posting/fbs/act/get-barcode/text', '{"id":1234}'],
+            '{"result":"%303%37%39"}'
+        );
+    }
+
+    /**
+     * @covers ::digitalActCheckStatus
+     */
+    public function testDigitalActCheckStatus(): void
+    {
+        $this->quickTest(
+            'digitalActCheckStatus',
+            [1234],
+            ['POST', '/v2/posting/fbs/digital/act/check-status', '{"id":1234}'],
+            '{"id":1234,"status":"FORMED"}',
+            static function (array $result): void {
+                self::assertSame(['id' => 1234, 'status' => 'FORMED'], $result);
+            }
+        );
+    }
+
+    /**
+     * @covers ::productCancel
+     */
+    public function testProductCancel(): void
+    {
+        $this->quickTest(
+            'productCancel',
+            [
+                '33920474-0032-1',
+                352,
+                'нет товара',
+                [
+                    [
+                        'sku'      => '160249683',
+                        'quantity' => '1',
+                        // must be filtered out
+                        'foo'      => 'bar',
+                    ],
+                ],
+            ],
+            [
+                'POST',
+                '/v2/posting/fbs/product/cancel',
+                '{"posting_number":"33920474-0032-1","cancel_reason_id":352,"cancel_reason_message":"нет товара","items":[{"sku":160249683,"quantity":1}]}',
+            ],
+            '{"result":"33920474-0032-1"}'
+        );
+    }
 }

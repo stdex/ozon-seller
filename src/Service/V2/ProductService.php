@@ -17,6 +17,40 @@ use Gam6itko\OzonSeller\Utils\ArrayHelper;
  *      sku?: int,
  *      offer_id?: string
  * }
+ * @psalm-type TCertificateType = 'UNKNOWN'|'CERTIFICATE_OF_CONFORMITY'|'DECLARATION'|'CERTIFICATE_OF_REGISTRATION'|'REGISTRATION_CERTIFICATE'|'REFUSED_LETTER'|'VETERINARY_COVER_DOCUMENT'|'SAFETY_DATA_SHEET'
+ * @psalm-type TCertificateFile = array{
+ *      name: string,
+ *      file_content: string
+ * }
+ * @psalm-type TCertificateExpiredDate = array{
+ *      date?: array{day?: int, month?: int, year?: int},
+ *      infinite?: bool
+ * }
+ * @psalm-type TCertificateCreateParams = array{
+ *      name?: string,
+ *      number?: string,
+ *      certificate_type?: TCertificateType,
+ *      certificate_country?: string,
+ *      accordance_type?: string,
+ *      product_type?: string,
+ *      issue_date?: string,
+ *      expired_date?: TCertificateExpiredDate,
+ *      link_to_registry?: string,
+ *      files?: list<TCertificateFile>,
+ *      skus?: list<string>
+ * }
+ * @psalm-type TCertificateOptionName = 'NAME'|'CERTIFICATE_TYPE'|'NUMBER'|'FILES'|'CERTIFICATE_COUNTRY'|'ACCORDANCE_TYPE'|'SKUS'|'ISSUE_DATE'|'EXPIRED_DATE'|'LINK_TO_REGISTRY'|'PRODUCT_TYPE'|'INFINITE'
+ * @psalm-type TCertificationParamsResponse = array{
+ *      params?: list<array{name?: TCertificateOptionName, required?: bool}>
+ * }
+ * @psalm-type TCertificationOptionsResponse = array{
+ *      option?: list<array{name?: TCertificateOptionName, required?: bool}>
+ * }
+ * @psalm-type TCertificateCreateResponse = array{
+ *      certificate_id?: int,
+ *      status?: 'INCOMPLETE'|'COMPLETED',
+ *      params?: list<array{name?: string, state?: 'VALID'|'INVALID'|'MISSING', error?: string}>
+ * }
  */
 class ProductService extends AbstractService
 {
@@ -260,7 +294,7 @@ class ProductService extends AbstractService
     }
 
     /**
-     * Receive stocks in seller's warehouses (FBS и rFBS).
+     * Receive stocks in seller's warehouses (FBS and rFBS).
      *
      * @see https://docs.ozon.ru/api/seller/?__rr=1&abt_att=1#operation/ProductAPI_GetProductInfoStocksByWarehouseFbsV2
      *
@@ -304,5 +338,149 @@ class ProductService extends AbstractService
         }
 
         return $this->request('POST', "{$this->path}/info/stocks-by-warehouse/fbs", $query);
+    }
+
+    /**
+     * Creates a quality certificate. Replaces V1\ProductService::certificateCreate,
+     * which Ozon shuts down on 31.08.2026.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateCreate
+     *
+     * @param TCertificateCreateParams|array<array-key, mixed> $params
+     *
+     * @return TCertificateCreateResponse
+     */
+    public function certificateCreate(array $params): array
+    {
+        $params = ArrayHelper::pick($params, [
+            'accordance_type',
+            'certificate_country',
+            'certificate_type',
+            'expired_date',
+            'files',
+            'issue_date',
+            'link_to_registry',
+            'name',
+            'number',
+            'product_type',
+            'skus',
+        ]);
+
+        $params = TypeCaster::castArr($params, [
+            'accordance_type'     => 'str',
+            'certificate_country' => 'str',
+            'certificate_type'    => 'str',
+            'issue_date'          => 'str',
+            'link_to_registry'    => 'str',
+            'name'                => 'str',
+            'number'              => 'str',
+            'product_type'        => 'str',
+            'skus'                => 'arrOfStr',
+        ]);
+
+        foreach ($params['files'] ?? [] as $file) {
+            if (empty($file['name']) || empty($file['file_content'])) {
+                throw new \InvalidArgumentException('Each file requires `name` and base64 encoded `file_content`');
+            }
+        }
+
+        return $this->request('POST', "{$this->path}/certificate/create", ['params' => $params]);
+    }
+
+    /**
+     * Required parameters for creating a quality certificate: which fields
+     * have to be passed to self::certificateCreate for a particular certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateParams
+     *
+     * @param TCertificateCreateParams|array<array-key, mixed> $params
+     *
+     * @return TCertificationParamsResponse
+     */
+    public function certificationParams(array $params = []): array
+    {
+        $params = ArrayHelper::pick($params, [
+            'accordance_type',
+            'certificate_country',
+            'certificate_type',
+            'expired_date',
+            'files',
+            'issue_date',
+            'link_to_registry',
+            'name',
+            'number',
+            'product_type',
+            'skus',
+        ]);
+
+        $params = TypeCaster::castArr($params, [
+            'accordance_type'     => 'str',
+            'certificate_country' => 'str',
+            'certificate_type'    => 'str',
+            'issue_date'          => 'str',
+            'link_to_registry'    => 'str',
+            'name'                => 'str',
+            'number'              => 'str',
+            'product_type'        => 'str',
+            'skus'                => 'arrOfStr',
+        ]);
+
+        return $this->request('POST', "{$this->path}/certification/params", ['params' => $params]);
+    }
+
+    /**
+     * The full list of parameters a quality certificate is built from,
+     * with a required flag.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductCertificateOptions
+     *
+     * @return TCertificationOptionsResponse
+     */
+    public function certificationOptions(): array
+    {
+        return $this->request('POST', "{$this->path}/certification/options");
+    }
+
+    /**
+     * Product pictures info.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductInfoPicturesV2
+     *
+     * @param list<int|string> $productIds
+     *
+     * @return array{items?: list<array>}
+     */
+    public function picturesInfo(array $productIds): array
+    {
+        return $this->request('POST', "{$this->path}/pictures/info", [
+            'product_id' => array_map('strval', $productIds),
+        ]);
+    }
+
+    /**
+     * Categories that require a certificate.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificationListV2
+     *
+     * @return array{certification?: list<array>, total?: int}
+     */
+    public function certificationList(int $page = 1, int $pageSize = 100): array
+    {
+        return $this->request('POST', "{$this->path}/certification/list", [
+            'page'      => $page,
+            'page_size' => $pageSize,
+        ]);
+    }
+
+    /**
+     * Accordance types of certificates.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/ProductAPI_ProductCertificateAccordanceTypesV2
+     *
+     * @return array{base?: list<array>, hazard?: list<array>}
+     */
+    public function certificateAccordanceTypesList(): array
+    {
+        return $this->request('POST', "{$this->path}/certificate/accordance-types/list", '{}');
     }
 }
