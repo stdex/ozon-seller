@@ -20,6 +20,12 @@ foreach ($whereIsAutoloader as $filepath) {
 use Gam6itko\OzonSeller\Service\V1\ActionsService;
 use Gam6itko\OzonSeller\Service\V1\CargoesService;
 use Gam6itko\OzonSeller\Service\V1\CarriageService;
+use Gam6itko\OzonSeller\Service\V1\CancelReasonService;
+use Gam6itko\OzonSeller\Service\V1\DiscountsTaskService;
+use Gam6itko\OzonSeller\Service\V1\DraftService;
+use Gam6itko\OzonSeller\Service\V1\SupplierService;
+use Gam6itko\OzonSeller\Service\V2\ActionsService as V2ActionsService;
+use Gam6itko\OzonSeller\Service\V2\ConditionalCancellationService;
 use Gam6itko\OzonSeller\Service\V1\DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V1\DescriptionCategoryService;
 use Gam6itko\OzonSeller\Service\V1\Posting\FbsService as V1FbsService;
@@ -109,6 +115,24 @@ const MAPPING = [
     '/v1/pricing-strategy/product/info'          => [PricingStrategyService::class, 'productInfo'],
     '/v1/pricing-strategy/strategy-ids-by-product-ids'  => [PricingStrategyService::class, 'strategyIdsByProductIds'],
     '/v1/pass/list'                                  => [V1PassService::class, 'list'],
+    '/v1/draft/direct/create'                          => [DraftService::class, 'directCreate'],
+    '/v1/draft/crossdock/create'                       => [DraftService::class, 'crossdockCreate'],
+    '/v1/draft/multi-cluster/create'                   => [DraftService::class, 'multiClusterCreate'],
+    '/v1/supplier/available_warehouses'                => [SupplierService::class, 'availableWarehouses'],
+    '/v1/actions/discounts-task/list'                  => [DiscountsTaskService::class, 'list'],
+    '/v1/actions/discounts-task/approve'               => [DiscountsTaskService::class, 'approve'],
+    '/v1/actions/discounts-task/decline'               => [DiscountsTaskService::class, 'decline'],
+    '/v1/actions/auto-add/products/list'               => [DiscountsTaskService::class, 'autoAddProductsList'],
+    '/v1/actions/auto-add/products/candidates'         => [DiscountsTaskService::class, 'autoAddProductsCandidates'],
+    '/v1/actions/auto-add/products/delete'             => [DiscountsTaskService::class, 'autoAddProductsDelete'],
+    '/v1/actions/auto-add/products/update'             => [DiscountsTaskService::class, 'autoAddProductsUpdate'],
+    '/v1/cancel-reason/list'                           => [CancelReasonService::class, 'list'],
+    '/v1/cancel-reason/list-by-order'                  => [CancelReasonService::class, 'listByOrder'],
+    '/v1/cancel-reason/list-by-posting'                => [CancelReasonService::class, 'listByPosting'],
+    '/v2/actions/discounts-task/list'                  => [V2ActionsService::class, 'discountsTaskList'],
+    '/v2/conditional-cancellation/list'                => [ConditionalCancellationService::class, 'list'],
+    '/v2/conditional-cancellation/approve'             => [ConditionalCancellationService::class, 'approve'],
+    '/v2/conditional-cancellation/reject'              => [ConditionalCancellationService::class, 'reject'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
