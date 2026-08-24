@@ -23,6 +23,7 @@ use Gam6itko\OzonSeller\Service\V1\CarriageService;
 use Gam6itko\OzonSeller\Service\V1\DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V1\DescriptionCategoryService;
 use Gam6itko\OzonSeller\Service\V1\Posting\FbsService as V1FbsService;
+use Gam6itko\OzonSeller\Service\V1\PricingStrategyService;
 use Gam6itko\OzonSeller\Service\V1\ProductService as V1ProductService;
 use Gam6itko\OzonSeller\Service\V1\ReportService;
 use Gam6itko\OzonSeller\Service\V1\ReturnService as V1ReturnService;
@@ -94,6 +95,18 @@ const MAPPING = [
     '/v1/seller-actions/update/installment'    => [SellerActionsService::class, 'updateInstallment'],
     '/v1/seller-actions/update/multi-level-discount'  => [SellerActionsService::class, 'updateMultiLevelDiscount'],
     '/v1/seller-actions/update/voucher'        => [SellerActionsService::class, 'updateVoucher'],
+    '/v1/pricing-strategy/list'                  => [PricingStrategyService::class, 'list'],
+    '/v1/pricing-strategy/create'                => [PricingStrategyService::class, 'create'],
+    '/v1/pricing-strategy/info'                  => [PricingStrategyService::class, 'info'],
+    '/v1/pricing-strategy/update'                => [PricingStrategyService::class, 'update'],
+    '/v1/pricing-strategy/delete'                => [PricingStrategyService::class, 'delete'],
+    '/v1/pricing-strategy/status'                => [PricingStrategyService::class, 'status'],
+    '/v1/pricing-strategy/competitors/list'      => [PricingStrategyService::class, 'competitorsList'],
+    '/v1/pricing-strategy/products/add'          => [PricingStrategyService::class, 'productsAdd'],
+    '/v1/pricing-strategy/products/list'         => [PricingStrategyService::class, 'productsList'],
+    '/v1/pricing-strategy/products/delete'       => [PricingStrategyService::class, 'productsDelete'],
+    '/v1/pricing-strategy/product/info'          => [PricingStrategyService::class, 'productInfo'],
+    '/v1/pricing-strategy/strategy-ids-by-product-ids'  => [PricingStrategyService::class, 'strategyIdsByProductIds'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
