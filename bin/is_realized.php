@@ -27,6 +27,7 @@ use Gam6itko\OzonSeller\Service\V1\ProductService as V1ProductService;
 use Gam6itko\OzonSeller\Service\V1\ReportService;
 use Gam6itko\OzonSeller\Service\V1\ReturnService as V1ReturnService;
 use Gam6itko\OzonSeller\Service\V1\SearchQueriesService;
+use Gam6itko\OzonSeller\Service\V1\SellerActionsService;
 use Gam6itko\OzonSeller\Service\V1\SellerService;
 use Gam6itko\OzonSeller\Service\V1\SupplyOrderService;
 use Gam6itko\OzonSeller\Service\V2\SupplyOrderService as V2SupplyOrderService;
@@ -75,6 +76,24 @@ const MAPPING = [
     '/v2/supply-order/timeslot/list'                  => [V2SupplyOrderService::class, 'timeslotList'],
     '/v3/supply-order/list'                          => [V3SupplyOrderService::class, 'list'],
     '/v3/supply-order/get'                           => [V3SupplyOrderService::class, 'get'],
+    '/v1/seller-actions/list'                  => [SellerActionsService::class, 'list'],
+    '/v1/seller-actions/archive'               => [SellerActionsService::class, 'archive'],
+    '/v1/seller-actions/change-activity'       => [SellerActionsService::class, 'changeActivity'],
+    '/v1/seller-actions/voucher/get'           => [SellerActionsService::class, 'voucherGet'],
+    '/v1/seller-actions/products/list'         => [SellerActionsService::class, 'productsList'],
+    '/v1/seller-actions/products/candidates'   => [SellerActionsService::class, 'productsCandidates'],
+    '/v1/seller-actions/products/add'          => [SellerActionsService::class, 'productsAdd'],
+    '/v1/seller-actions/products/delete'       => [SellerActionsService::class, 'productsDelete'],
+    '/v1/seller-actions/create/discount'       => [SellerActionsService::class, 'createDiscount'],
+    '/v1/seller-actions/create/discount-with-condition'  => [SellerActionsService::class, 'createDiscountWithCondition'],
+    '/v1/seller-actions/create/installment'    => [SellerActionsService::class, 'createInstallment'],
+    '/v1/seller-actions/create/multi-level-discount'  => [SellerActionsService::class, 'createMultiLevelDiscount'],
+    '/v1/seller-actions/create/voucher'        => [SellerActionsService::class, 'createVoucher'],
+    '/v1/seller-actions/update/discount'       => [SellerActionsService::class, 'updateDiscount'],
+    '/v1/seller-actions/update/discount-with-condition'  => [SellerActionsService::class, 'updateDiscountWithCondition'],
+    '/v1/seller-actions/update/installment'    => [SellerActionsService::class, 'updateInstallment'],
+    '/v1/seller-actions/update/multi-level-discount'  => [SellerActionsService::class, 'updateMultiLevelDiscount'],
+    '/v1/seller-actions/update/voucher'        => [SellerActionsService::class, 'updateVoucher'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
