@@ -18,6 +18,7 @@ foreach ($whereIsAutoloader as $filepath) {
 }
 
 use Gam6itko\OzonSeller\Service\V1\ActionsService;
+use Gam6itko\OzonSeller\Service\V1\CarriageService;
 use Gam6itko\OzonSeller\Service\V1\DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V1\DescriptionCategoryService;
 use Gam6itko\OzonSeller\Service\V1\Posting\FbsService as V1FbsService;
@@ -44,6 +45,7 @@ const MAPPING = [
     // V1
     '/v1/actions'                                    => [ActionsService::class, 'list'],
     '/v1/roles'                                      => [SellerService::class, 'roles'],
+    '/v1/posting/carriage-available/list'            => [CarriageService::class, 'availableList'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
     '/v1/search-queries/text'                        => [SearchQueriesService::class, 'text'],
