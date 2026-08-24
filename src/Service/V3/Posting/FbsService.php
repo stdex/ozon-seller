@@ -265,4 +265,19 @@ class FbsService extends AbstractService implements HasOrdersInterface, HasUnful
 
         return $this->request('POST', "$this->path/ship", $body);
     }
+
+    /**
+     * Sets the number of boxes a multi-box posting is split into.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_SetMultiBoxQtyV3
+     *
+     * @return array{result?: bool}
+     */
+    public function multiBoxQtySet(string $postingNumber, int $multiBoxQty): array
+    {
+        return $this->request('POST', '/v3/posting/multiboxqty/set', [
+            'posting_number' => $postingNumber,
+            'multi_box_qty'  => $multiBoxQty,
+        ]);
+    }
 }

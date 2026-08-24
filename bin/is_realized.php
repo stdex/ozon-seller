@@ -32,9 +32,11 @@ use Gam6itko\OzonSeller\Service\V2\DeliveryMethodService as V2DeliveryMethodServ
 use Gam6itko\OzonSeller\Service\V2\Posting\FbsService;
 use Gam6itko\OzonSeller\Service\V2\ProductService as V2ProductService;
 use Gam6itko\OzonSeller\Service\V2\WarehouseService;
+use Gam6itko\OzonSeller\Service\V3\Posting\FbsService as V3FbsService;
 use Gam6itko\OzonSeller\Service\V3\ProductService as V3ProductService;
 use Gam6itko\OzonSeller\Service\V4\ProductService as V4ProductService;
 use Gam6itko\OzonSeller\Service\V4\Posting\FbsService as V4FbsService;
+use Gam6itko\OzonSeller\Service\V5\Posting\FbsService as V5FbsService;
 use Gam6itko\OzonSeller\Service\V5\ProductService as V5ProductService;
 use Gam6itko\OzonSeller\Service\V6\Posting\FbsService as V6FbsService;
 use GuzzleHttp\Client;
@@ -65,8 +67,19 @@ const MAPPING = [
     '/v1/product/update/discount'                    => [V1ProductService::class, 'updateDiscount'],
     '/v1/posting/fbs/package-label/get'              => [V1FbsService::class, 'packageLabelGet'],
     '/v1/posting/fbs/cancel-reason'                  => [V1FbsService::class, 'cancelReason'],
+    '/v1/posting/cancel'                             => [V1FbsService::class, 'cancel'],
+    '/v1/posting/cancel/status'                      => [V1FbsService::class, 'cancelStatus'],
+    '/v1/posting/marks'                              => [V1FbsService::class, 'marks'],
+    '/v1/posting/cutoff/set'                         => [V1FbsService::class, 'cutoffSet'],
+    '/v1/posting/unpaid-legal/product/list'          => [V1FbsService::class, 'unpaidLegalProductList'],
+    '/v1/posting/global/etgb'                        => [V1FbsService::class, 'globalEtgb'],
+    '/v1/posting/digital/codes/upload'               => [V1FbsService::class, 'digitalCodesUpload'],
+    '/v1/fbs/posting/product/exemplar/update'        => [V1FbsService::class, 'productExemplarUpdate'],
     '/v1/report/products/create'                     => [ReportService::class, 'products'],
     '/v1/returns/list'                               => [V1ReturnService::class, 'list'],
+
+    // V3
+    '/v3/posting/multiboxqty/set'                    => [V3FbsService::class, 'multiBoxQtySet'],
 
     // V2
     '/v2/delivery-method/list'                       => [V2DeliveryMethodService::class, 'list'],
@@ -98,6 +111,8 @@ const MAPPING = [
     '/v5/product/info/prices'                        => [V5ProductService::class, 'infoPrices'],
 
     // V6
+    '/v5/fbs/posting/product/exemplar/status'        => [V5FbsService::class, 'productExemplarStatus'],
+    '/v5/fbs/posting/product/exemplar/validate'      => [V5FbsService::class, 'productExemplarValidate'],
     '/v6/fbs/posting/product/exemplar/create-or-get' => [V6FbsService::class, 'productExemplarCreateOrGet'],
     '/v6/fbs/posting/product/exemplar/set'           => [V6FbsService::class, 'productExemplarSet'],
 

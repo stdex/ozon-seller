@@ -380,4 +380,111 @@ class FbsService extends AbstractService implements HasOrdersInterface, HasUnful
 
         return $this->request('POST', "{$this->path}/product/country/set", $body);
     }
+
+    /**
+     * Acceptance acts list.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_PostingFBSActList
+     *
+     * @param array{filter?: array{date_from: string, date_to: string, integration_type?: string, status?: list<string>}, limit?: int} $requestData
+     *
+     * @return list<array>
+     */
+    public function actList(array $requestData = []): array
+    {
+        $requestData = array_merge(
+            ['limit' => 100],
+            ArrayHelper::pick($requestData, ['filter', 'limit'])
+        );
+
+        if (isset($requestData['filter'])) {
+            $requestData['filter'] = TypeCaster::castArr(
+                ArrayHelper::pick($requestData['filter'], ['date_from', 'date_to', 'integration_type', 'status']),
+                [
+                    'date_from'        => 'str',
+                    'date_to'          => 'str',
+                    'integration_type' => 'str',
+                    'status'           => 'arrOfStr',
+                ]
+            );
+        }
+
+        $requestData = TypeCaster::castArr($requestData, ['limit' => 'int']);
+
+        return $this->request('POST', "{$this->path}/act/list", $requestData);
+    }
+
+    /**
+     * Postings of an acceptance act.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_PostingFBSActGetPostings
+     *
+     * @return list<array>
+     */
+    public function actGetPostings(int $id): array
+    {
+        return $this->request('POST', "{$this->path}/act/get-postings", ['id' => $id]);
+    }
+
+    /**
+     * Acceptance act barcode as a PNG.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_PostingFBSGetBarcode
+     *
+     * @return string PNG contents
+     */
+    public function actGetBarcode(int $id): string
+    {
+        return $this->request('POST', "{$this->path}/act/get-barcode", ['id' => $id], false);
+    }
+
+    /**
+     * Acceptance act barcode as text.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_PostingFBSGetBarcodeText
+     *
+     * @return string
+     */
+    public function actGetBarcodeText(int $id)
+    {
+        return $this->request('POST', "{$this->path}/act/get-barcode/text", ['id' => $id]);
+    }
+
+    /**
+     * Status of a digital acceptance act.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_PostingFBSDigitalActCheckStatus
+     *
+     * @return array{id?: int, status?: string}
+     */
+    public function digitalActCheckStatus(int $id): array
+    {
+        return $this->request('POST', "{$this->path}/digital/act/check-status", ['id' => $id]);
+    }
+
+    /**
+     * Cancels some products of a posting.
+     *
+     * @see https://docs.ozon.ru/api/seller/#operation/PostingAPI_PostingProductCancel
+     *
+     * @param list<array{sku: int, quantity: int}> $items
+     *
+     * @return string
+     */
+    public function productCancel(string $postingNumber, int $cancelReasonId, string $cancelReasonMessage, array $items)
+    {
+        $items = array_map(static function (array $item): array {
+            return TypeCaster::castArr(
+                ArrayHelper::pick($item, ['sku', 'quantity']),
+                ['sku' => 'int', 'quantity' => 'int']
+            );
+        }, $items);
+
+        return $this->request('POST', "{$this->path}/product/cancel", [
+            'posting_number'        => $postingNumber,
+            'cancel_reason_id'      => $cancelReasonId,
+            'cancel_reason_message' => $cancelReasonMessage,
+            'items'                 => $items,
+        ]);
+    }
 }
