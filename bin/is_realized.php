@@ -18,6 +18,7 @@ foreach ($whereIsAutoloader as $filepath) {
 }
 
 use Gam6itko\OzonSeller\Service\V1\ActionsService;
+use Gam6itko\OzonSeller\Service\V1\CargoesService;
 use Gam6itko\OzonSeller\Service\V1\CarriageService;
 use Gam6itko\OzonSeller\Service\V1\DeliveryMethodService;
 use Gam6itko\OzonSeller\Service\V1\DescriptionCategoryService;
@@ -45,6 +46,9 @@ const MAPPING = [
     // V1
     '/v1/actions'                                    => [ActionsService::class, 'list'],
     '/v1/roles'                                      => [SellerService::class, 'roles'],
+    '/v1/cargoes-label/create'                       => [CargoesService::class, 'labelCreate'],
+    '/v1/cargoes-label/get'                          => [CargoesService::class, 'labelGet'],
+    '/v1/cargoes-label/file/{file_guid}'             => [CargoesService::class, 'labelFile'],
     '/v1/posting/carriage-available/list'            => [CarriageService::class, 'availableList'],
     '/v1/delivery-method/list'                       => [DeliveryMethodService::class, 'list'],
     '/v1/delivery-method/return/settings/get'        => [DeliveryMethodService::class, 'returnSettingsGet'],
