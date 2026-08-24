@@ -212,6 +212,10 @@ const MAPPING = [
     //   /v2/returns/company/fbo, /v2/returns/company/fbs                            -> /v1/returns/list
     //   /v2/posting/crossborder/*                                                   -> схема crossborder закрыта
     //   /v5/fbs/posting/product/exemplar/{create-or-get,set}                        -> /v6/fbs/posting/product/exemplar/*
+
+    // Сознательно не реализованы (остаются NotRealized):
+    //   /v1/review/{list,info,count,change-status,comment/delete}  -> deprecated в спеке, реализованы /v2/review/*
+    //   /v1/receipts/upload                                        -> multipart/form-data, транспорт умеет только JSON
 ];
 
 $json = loadSwagger(array_slice($argv, 1));
